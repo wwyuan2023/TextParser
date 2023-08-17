@@ -1,0 +1,2 @@
+include textparser/resources/*
+include textparser/third_part/g2p_en/checkpoint20.npz
