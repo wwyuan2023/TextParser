@@ -200,7 +200,7 @@ def main():
     if sys.argv[1].lower() == "-d":
         devectorization(sys.stdin if len(sys.argv) == 2 else sys.argv[2])
     else:
-        vectorization(sys.stdin if len(sys.argv) == 2 else sys.argv[2])
+        vectorization()
 
 
 if __name__ == "__main__":
