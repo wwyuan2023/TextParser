@@ -1,0 +1,10 @@
+GPU jh_iy1-p_iy1-y_uw1;0;nnp=0
+PUA p_iy1-y_uw1-ey1;0;nnp=0
+CUDA k_uw1-d_ah0;0;nnp=0
+LOL eh_l1-ow1-eh_l1;0;nnp=0
+COO s_iy1-ow1-ow1;0;nnp=0
+APP ay1-p_iy1-p_iy1;0;nnp=0
+API ay1-p_iy1-ay1;0;nnp=0
+PCI p_iy1-s_iy1-ay1;0;nnp=0
+USB y_uw1-eh_s1-b_iy1;0;nnp=0
+AIGC ey1-ay1-jh_iy1-s_iy1;0;nnp=0

@@ -772,7 +772,7 @@ class SegmenterEN(object):
         # g2p for oov
         self.letter_vowels = re.compile(r'[aeiou]', re.I)
         self.letter_pron_table = {
-            "A": "(ax)1", "B": "(b_iy)1", "C": "(s_iy)1", "D": "(d_iy)1", "E": "(iy)1",
+            "A": "(ey)1", "B": "(b_iy)1", "C": "(s_iy)1", "D": "(d_iy)1", "E": "(iy)1",
             "F": "(eh_f)1", "G": "(jh_iy)1", "H": "(ey_ch)1", "I": "(ay)1", "J": "(jh_ey)1",
             "K": "(k_ey)1", "L": "(eh_l)1", "M": "(eh_m)1", "N": "(eh_n)1", "O": "(ow)1",
             "P": "(p_iy)1", "Q": "(k_y_uw)1", "R": "(aa_r)1", "S": "(eh_s)1", "T": "(t_iy)1",
@@ -858,13 +858,14 @@ class SegmenterEN(object):
         return info[1]
     
     def _lts(self, word):
-        if self.letter_vowels.search(word) is None:
+        if len(word) == 1 or self.letter_vowels.search(word) is None:
             # not contains vowel letter
             syls = []
             for w in word:
                 s = self.letter_pron_table.get(w.upper(), None)
                 if s is not None:
                     syls += s.split("-")
+            if len(syls) == 0: syls = None
         else:  
             syls = self.g2p(word)
         return syls

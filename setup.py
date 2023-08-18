@@ -43,7 +43,7 @@ extras_require = {k: v for k, v in requirements.items()
 
 dirname = os.path.dirname(__file__)
 setup(name="textparser",
-      version="0.1.5",
+      version="0.1.6",
       url="https://github.com/wwyuan2023/TextParser.git",
       author="Wuwen YUAN",
       author_email="yuanwuwen@126.com",
