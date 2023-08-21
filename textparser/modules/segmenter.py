@@ -858,8 +858,8 @@ class SegmenterEN(object):
         return info[1]
     
     def _lts(self, word):
-        if len(word) == 1 or self.letter_vowels.search(word) is None:
-            # not contains vowel letter
+        if len(word) == 1 or self.letter_vowels.search(word) is None \
+            or (len(word) <= 4 and word.isupper()):
             syls = []
             for w in word:
                 s = self.letter_pron_table.get(w.upper(), None)
