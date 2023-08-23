@@ -6,8 +6,7 @@ import os, sys
 import pip
 
 from distutils.version import LooseVersion
-from setuptools import find_packages
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 if LooseVersion(sys.version) < LooseVersion("3.6"):
@@ -42,8 +41,9 @@ extras_require = {k: v for k, v in requirements.items()
                   if k not in ["install", "setup"]}
 
 dirname = os.path.dirname(__file__)
+exec(open(os.path.join(dirname, "textparser/version.py")).read())
 setup(name="textparser",
-      version="0.1.6",
+      version=__version__,
       url="https://github.com/wwyuan2023/TextParser.git",
       author="Wuwen YUAN",
       author_email="yuanwuwen@126.com",
