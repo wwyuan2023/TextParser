@@ -541,7 +541,7 @@ class TextNormalizerCN(object):
             elif opr == '!': return content != val
             return True
         def match_z(val:str, opr:str, content:str):
-            val, content = int(val), int(content)
+            val, content = float(val), float(content)
             if opr == '=': return content == val
             elif opr == '<': return content < val
             elif opr == '>': return content > val
@@ -589,18 +589,19 @@ class TextNormalizerCN(object):
                 continue
 
             res = 0
+            content = tokens[ii][1]
             if condition == 'c':
-                if not match_c(val, opr, tokens[ii][1]): res = -3
+                if not match_c(val, opr, content): res = -3
             elif condition == 'z':
-                if not match_z(val, opr, tokens[ii][1]): res = -4
+                if not match_z(val, opr, content): res = -4
             elif condition == 'b':
-                if not match_b(val, opr, tokens[ii][1]): res = -5
+                if not match_b(val, opr, content): res = -5
             elif condition == 'd':
-                if not match_d(val, opr, tokens[ii][1]): res = -6
+                if not match_d(val, opr, content): res = -6
             elif condition == 'h':
-                if not match_h(val, opr, tokens[ii][1]): res = -7
+                if not match_h(val, opr, content): res = -7
             elif condition == 't':
-                if not match_t(val, opr, tokens[ii][1]): res = -8
+                if not match_t(val, opr, content): res = -8
             
             if isor == -1 and res < 0: return res
             elif isor == 1 and res == 0: orres = 1
@@ -702,6 +703,9 @@ class Num2WrdEN(object):
             [("0", "oh"), ("1", "one"), ("2", "two"), ("3", "three"), ("4", "four"), ("5", "five"), ("6", "six"), ("7", "seven"), ("8", "eight"), ("9", "nine"), 
              ("00", "oh oh"), ("01", "oh one"), ("02", "oh two"), ("03", "oh three"), ("04", "oh four"), ("05", "oh five"), ("06", "oh six"), ("07", "oh seven"), ("08", "oh eight"), ("09", "oh nine")]
         )
+        for i in range(10, 100):
+            x = str(i)
+            self.DD[x] = self.OhDD[x] = self._num2en(x)
         self.Card2Ord = dict(
             [("one", "first"), ("two", "secord"), ("three", "third"), ("five", "fifth"), ("eight", "eighth"), ("nine", "ninth"), ("twelve", "twelfth")]
         )
@@ -712,8 +716,8 @@ class Num2WrdEN(object):
         )
     
     def _del_front_zero(self, x: str):
-        while len(x) > 1:
-            if x[0] == '0': x = x[1:]
+        while len(x) > 2:
+            if x[0] == '0' and x[1].isdigit(): x = x[1:]
             else: break
         return x
     
@@ -849,11 +853,11 @@ class Num2WrdEN(object):
         
         # interger
         if int_ is not None:
-            out += _int2en(int_)
+            out += _int2en(int_) + " "
         
         # float
         if fract is not None:
-            while len(fract) > 0:
+            while len(fract) > 1:
                 if fract[-1] == "0": fract = fract[:-1]
                 else: break
             if len(fract) > 0:
@@ -1372,7 +1376,7 @@ class TextNormalizerEN(object):
             elif opr == '!': return content != val
             return True
         def match_z(val:str, opr:str, content:str):
-            val, content = int(val), int(content)
+            val, content = float(val), float(content)
             if opr == '=': return content == val
             elif opr == '<': return content < val
             elif opr == '>': return content > val
@@ -1393,18 +1397,18 @@ class TextNormalizerEN(object):
                 return all([content != item for item in items])
             return False
         def match_d(val:str, opr:str, content:str):
-            return match_b(val, opr, content.strip().upper())
+            return match_b(val, opr, content.upper())
         def match_t(val:str, opr:str, content:str):
             mr = self.regex['^(\d+)'].match(val)
             n = mr.group(1)
             val = val[mr.end(1):]
-            content = content.strip()[-int(n):].upper()
+            content = content[-int(n):].upper()
             return match_b(val, opr, content)
         def match_h(val:str, opr:str, content:str):
             mr = self.regex['^(\d+)'].match(val)
             n = mr.group(1)
             val = val[mr.end(1):]
-            content = content.strip()[:int(n)].upper()
+            content = content[:int(n)].upper()
             return match_b(val, opr, content)
         
         # match token property
@@ -1420,18 +1424,19 @@ class TextNormalizerEN(object):
                 continue
 
             res = 0
+            content = tokens[ii][1].strip()
             if condition == 'c':
-                if not match_c(val, opr, tokens[ii][1]): res = -3
+                if not match_c(val, opr, content): res = -3
             elif condition == 'z':
-                if not match_z(val, opr, tokens[ii][1]): res = -4
+                if not match_z(val, opr, content): res = -4
             elif condition == 'b':
-                if not match_b(val, opr, tokens[ii][1]): res = -5
+                if not match_b(val, opr, content): res = -5
             elif condition == 'd':
-                if not match_d(val, opr, tokens[ii][1]): res = -6
+                if not match_d(val, opr, content): res = -6
             elif condition == 'h':
-                if not match_h(val, opr, tokens[ii][1]): res = -7
+                if not match_h(val, opr, content): res = -7
             elif condition == 't':
-                if not match_t(val, opr, tokens[ii][1]): res = -8
+                if not match_t(val, opr, content): res = -8
             
             if isor == -1 and res < 0: return res
             elif isor == 1 and res == 0: orres = 1
@@ -1501,6 +1506,7 @@ class TextNormalizerEN(object):
             elif opr == 'i':
                 outputs.append(_isolated(str_con))
             else: #  opr in 'smnuxeoj':
+                outputs.append(" ")
                 outputs.append(self.N2W(str_con, opr))
                 outputs.append(" ")
             
@@ -1601,9 +1607,10 @@ class TextNormalizer(object):
             # Symbol: blank
             mr = self.regex['Blank'].match(utt_text)
             if mr:
+                r1 = mr.group(1)
                 utt_text = utt_text[mr.end(1):]
-                if pre_lang == Lang.EN:
-                    sub_text[-1] += ' '
+                if len(sub_text) > 0:
+                    sub_text[-1] += r1
                 continue
             # Symbol: others
             r1 = utt_text[0]
@@ -1622,7 +1629,16 @@ class TextNormalizer(object):
                 sub_lang[i] = next_lang
             next_lang = sub_lang[i]
         
-        return sub_text, sub_lang
+        # combines
+        sub_text_, sub_lang_ = [], []
+        for text, lang in zip(sub_text, sub_lang):
+            if len(sub_text_) > 0 and sub_lang_[-1] == lang:
+                sub_text_[-1] += text
+            else:
+                sub_text_.append(text)
+                sub_lang_.append(lang)
+        
+        return sub_text_, sub_lang_
     
     def __call__(self, utt_id, utt_text):
         if self.loglv > 0:
