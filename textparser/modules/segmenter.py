@@ -975,10 +975,10 @@ class Segmenter(object):
 
         # compile regex
         self.regex = {
-            '^([\u4e00-\u9fa5]+)': re.compile(r'^([\u4e00-\u9fa5]+)'),
-            '^([a-zA-Z\']+)': re.compile(r'^([a-zA-Z\']+)'),
-            '^(\(([a-zA-Z]+)(\d)\))': re.compile(r'^(\(([a-zA-Z]+)(\d)\))'),
-            '^(\s+)': re.compile(r'^(\s+)'),
+            'Chinese': re.compile(r'^([\u4e00-\u9fa5]+)'),
+            'English': re.compile(r'^([a-zA-Z\']+)'),
+            'PinyinMark': re.compile(r'^([\(\[（【]([a-zA-Z]+)(\d)[\)\]）】])'),
+            'Blank': re.compile(r'^(\s+)'),
         }
         if self.loglv > 0:
             func_name = f"{self.__class__.__name__}::{sys._getframe().f_code.co_name}"
@@ -999,7 +999,7 @@ class Segmenter(object):
         pre_lang = Lang.UNKNOW
         while utt_text != '':
             # Chinese
-            mr = self.regex['^([\u4e00-\u9fa5]+)'].match(utt_text)
+            mr = self.regex['Chinese'].match(utt_text)
             if mr:
                 r1 = mr.group(1)
                 utt_text = utt_text[mr.end(1):]
@@ -1013,7 +1013,7 @@ class Segmenter(object):
                 pre_lang = Lang.CN
                 continue
             # Enligsh
-            mr = self.regex['^([a-zA-Z\']+)'].match(utt_text)
+            mr = self.regex['English'].match(utt_text)
             if mr:
                 r1 = mr.group(1)
                 utt_text = utt_text[mr.end(1):]
@@ -1027,7 +1027,7 @@ class Segmenter(object):
                 pre_lang = Lang.EN
                 continue
             # Pinyin mark
-            mr = self.regex['^(\(([a-zA-Z]+)(\d)\))'].match(utt_text)
+            mr = self.regex['PinyinMark'].match(utt_text)
             if mr:
                 py, tone = mr.group(2), mr.group(3)
                 if Syllable.is_py(py) and int(tone) <= 5 and pre_lang == Lang.CN:
@@ -1035,7 +1035,7 @@ class Segmenter(object):
                     sub_mark[-1][-1] = py + tone
                     continue
             # Symbol: blank
-            mr = self.regex['^(\s+)'].match(utt_text)
+            mr = self.regex['Blank'].match(utt_text)
             if mr:
                 utt_text = utt_text[mr.end(1):]
                 if pre_lang == Lang.EN:

@@ -1,0 +1,1938 @@
+###############################################################################
+# 英文特殊符号规则文件
+###############################################################################
+# 说明
+#    特殊符号规则（一下简称规则）的描述采用类似于条件-结果的判断结构，类似于三元表达式，规
+# 则的表达式可以定义为：<weight>?<token list> <token property>:<result>
+# 其中，“?”和“:”为表达式隔开符号；
+# <weight>为规则的权重；
+# <token list>为token列表；
+# <token property>表示每个token的属性；
+# <result>表示对每个token处理的返回结果。
+# 
+################################################################################
+# 下面对规则表达式的各个字段进行说明。
+################################################################################
+#    (1)规则的权重，取值范围从0～255。
+#    (2)规则的token类型有下面种类。
+#        S表示数字串节点
+#        M表示数值节点
+#        F表示特殊符号节点
+#        Y表示英文节点
+#        H表示汉字节点
+#
+#        注意：每条规则最大为9个token。
+#
+#    (3)规则中每个token的属性。
+#        b{本节点被包含
+#        b}本节点包含
+#        b#本节点等于
+#        h{N表示开头N个字(大写)被包含
+#        h}N表示开头N个字(大写)包含
+#        h#N表示开头N个字(大写)等于
+#        t{N表示结尾N个字(大写)被包含
+#        t}N表示结尾N个字(大写)包含
+#        t#N表示结尾N个字(大写)等于
+#        d{表示英文大写被包含
+#        d}表示英文大写包含
+#        d#表示英文大写等于
+#        c表示数字串的长度
+#        z表示数值的大小
+#        注意：1) c和z一般接续大于、小于和等于(即><=!)，再接续数值。
+#             2) 多个字符串可以用“^”分割，比如第1个节点结尾6个字中包含电话、咨询和传真，可以
+#                表示为： 1t}6"电话^咨询^传真"
+#             3) N的范围1～2位十进制数字
+#
+#    (4)token处理后的返回结果
+#        t表示返回结果为汉字Token
+#        y表示返回结果为英文Token
+#        f表示返回结果为符号Token
+#        d表示返回结果为DT映射表结果
+#        i表示返回结果为英文Token,用来处理字母需要单读的情况
+#        m表示返回结果为数值Token
+#        s表示返回结果为数字串Token
+#        n表示返回结果为数字串Token,用来处理英文中“年份”
+#        u表示返回结果为英文Token,用来处理英文中的“月份”
+#        x表示返回结果为英文Token,用来处理序数词
+#        e表示返回结果为分数。
+#        j表示返回结果为时间。
+#        o表示返回结果为数字串Token，但0要合成oh,而不是zero，如果“0”出现在电话号码，房间号，公车号中，我们发“oh”的音
+#        
+#        <>中的数字表示选择第几个节点的内容，<>中的内容作为文本直接返回。
+#
+#        注意：返回的Token之间用分号隔开。
+###############################################################################
+# 字符串到单词的映射表，里面的字符串都是大写且发音唯一
+###############################################################################
+#!DT!# A.M.     a.m.
+#!DT!# P.M.     p.m.
+#!DT!# AM       a.m.
+#!DT!# PM       p.m.
+
+#!DT!# MON      Monday
+#!DT!# TUE      Tuesday
+#!DT!# TUES     Tuesday
+#!DT!# WED      Wednesday
+#!DT!# THU      Thurday 
+#!DT!# THUR     Thurday 
+#!DT!# FRI      Friday
+#!DT!# SAT      Saturday 
+#!DT!# SUN      Sunday
+
+#!DT!# JAN      January
+#!DT!# FEB      February
+#!DT!# MAR      March
+#!DT!# APR      April
+#!DT!# MAY      May
+#!DT!# JUN      June
+#!DT!# JUL      July
+#!DT!# AUG      August
+#!DT!# SEP      September
+#!DT!# SEPT     September
+#!DT!# OCT      October
+#!DT!# NOV      November
+#!DT!# DEC      December
+
+#!DT!# °        degrees
+#!DT!# ℃                   degrees centigrade
+#!DT!# ℉                   degrees Fahrenheit
+#!DT!# °C       degrees
+#!DT!# °F       degrees Fahrenheit
+#!DT!# °K       degrees Kelvin
+#!DT!# Å        angstrom
+#!DT!# ㎡       square meter|square meters
+#!DT!# ㏕       milliliter|milliliters
+#!DT!# ㎜       millimeter|millimeters
+#!DT!# ㎝       centimeter|centimeters
+#!DT!# ㎞       kilometer|kilometers
+#!DT!# ㏎       kilometer|kilometers
+#!DT!# ㎎       milligram|milligram
+#!DT!# ㎏       kilogram|kilogram
+#!DT!# ㏄       milliliter|milliliter
+
+#!DT!# Α       alpha
+#!DT!# α       alpha
+#!DT!# Β       beta
+#!DT!# β       beta
+#!DT!# Γ       gamma
+#!DT!# γ       gamma
+#!DT!# Δ       delta
+#!DT!# δ       delta
+#!DT!# Ε       epslion
+#!DT!# ε       epslion
+#!DT!# Ζ       zeta
+#!DT!# ζ       zeta
+#!DT!# Η       eta
+#!DT!# η       eta
+#!DT!# Θ       theta
+#!DT!# θ       theta
+#!DT!# Ι       lota
+#!DT!# ι       lota
+#!DT!# Κ       kappa
+#!DT!# κ       kappa
+#!DT!# ∧       lambda
+#!DT!# λ       lambda
+#!DT!# Μ       mu
+#!DT!# μ       mu
+#!DT!# Ν       nu
+#!DT!# ν       nu
+#!DT!# Ξ       xi
+#!DT!# ξ       xi
+#!DT!# Ο       omicron
+#!DT!# ο       omicron
+#!DT!# π       pi
+#!DT!# ∏       pi
+#!DT!# Ρ       rho
+#!DT!# ρ       rho
+#!DT!# ∑       sigma
+#!DT!# σ       sigma
+#!DT!# Τ       tau
+#!DT!# τ       tau
+#!DT!# Υ       upsilon
+#!DT!# υ       upsilon
+#!DT!# Φ       phi
+#!DT!# φ       phi
+#!DT!# Χ       chi
+#!DT!# χ       chi
+#!DT!# Ψ       psi
+#!DT!# ψ       psi
+#!DT!# Ω       omega
+#!DT!# ω       omega
+
+
+#!DT!# ￥        Yuan|Yuan
+#!DT!# €         Euro|Euros
+#!DT!# $         dollar|dollars
+#!DT!# ＄        dollar|dollars
+#!DT!# ﹩        cent|cents
+#!DT!# ￠        cent|cents
+#!DT!# £        pound|pounds
+#!DT!# ￡       pound|pounds
+#!DT!# ₤       lira|lira
+#!DT!# ฿       baht|bahts
+#!DT!# ₵       cedi|cedis
+#!DT!# ₡       colon|colons
+#!DT!# ₫       dong|dong
+#!DT!# ƒ       florin|florin
+#!DT!# ₭       kip|kips
+#!DT!# ₥       wen|wen
+#!DT!# ₦       naira|naira
+#!DT!# ₱       peso|pesos
+#!DT!# ৲৳            rupee|rupees
+#!DT!# R$       real|reals
+#!DT!# Zł       zloty|zlote
+#!DT!# 〒       jongol|jongols
+#!DT!# ₮       tugrik|tugrik
+#!DT!# ₩       won|won
+#!DT!# ₴       Ukrainian Hryvnia|Ukrainian Hryvnias
+#!DT!# ₪       Shekel|Shekels
+#!DT!# ៛       riel|riels
+#!DT!# ﷼       riyal|riyals
+#!DT!# ₯       drachma|drachmas
+#!DT!# Δρχ       drachma|drachmas
+#!DT!# Δρ.       drachma|drachmas
+
+#!DT!# RMB￥     Yuan|Yuan
+#!DT!# JPY￥     Yen|Yen
+#!DT!# J.￥      Yen|Yen
+
+#!DT!# RMB       Yuan|Yuan
+#!DT!# HKD       Hongkong dollar|Hongkong dollars
+#!DT!# HK$       Hongkong dollar|Hongkong dollars
+#!DT!# MOP       pataca|patacas
+#!DT!# CNY       yuan|yuan
+#!DT!# KPW       won|won
+#!DT!# VND       dong|dong
+#!DT!# JPY       yen|yen
+#!DT!# LAK       kip|kips
+#!DT!# KHR       riel|riels
+#!DT!# PHP       peso|pesos
+#!DT!# MYR       ringgit|ringgit
+#!DT!# SGD       Singapore dollar|Singapore dollars
+#!DT!# SG$       Singapore dollar|Singapore dollars
+#!DT!# THP       baht|bahts
+#!DT!# BUK       kyat|kyats
+#!DT!# LKR       Sri Lankan rupee|Sri Lankan rupees
+#!DT!# MVR       Maldives rupee|Maldives rupees
+#!DT!# IDR       rupiah|rupiah
+#!DT!# PRK       Pakistani rupee|Pakistani rupees
+#!DT!# INR       rupee|rupees
+#!DT!# NPR       Nepalese rupee|Nepalese rupees
+#!DT!# AFA       afghani|afghanis
+#!DT!# IRR       riyal|riyals
+#!DT!# IQD       Iraqi Dinar|Iraqi Dinars
+#!DT!# ILS       Shekel|Shekels
+#!DT!# SYP       Syrian Pound|Syrian Pounds
+#!DT!# LBP       Lebanese Pound|Lebanese Pounds
+#!DT!# JOD       Jordanian Dinar|Jordanian Dinars
+#!DT!# SAR       Riyal|Riyals
+#!DT!# KWD       Kuwaiti Dinar|Kuwaiti Dinars
+#!DT!# BHD       Bahrain Dinar|Bahrain Dinars
+#!DT!# QAR       Qatar Riyal|Qatar Riyals
+#!DT!# OMR       Oman Riyal|Oman Riyals
+#!DT!# YER       Yemeni Riyal|Yemeni Riyals
+#!DT!# YDD       Yemeni Dinar|Yemeni Dinars
+#!DT!# TRL       Turkish Pound|Turkish Pounds
+#!DT!# CYP       Cyprus Pound|Cyprus Pounds
+#!DT!# EUR       Euro|Euros
+#!DT!# ISK       krona|kronor
+#!DT!# DKK       Danish Krone|Danish Kroner
+#!DT!# NOK       Norwegian Krone|Norwegian Kroner
+#!DT!# SEK       krona|kronor
+#!DT!# FIM       Finnish Markka|Finnish Markkas
+#!DT!# SUR       ruble|rubles
+#!DT!# PLZ       zloty|zlote
+#!DT!# CSK       Czech Koruna|Czech Korunas
+#!DT!# HUF       forint|forint
+#!DT!# DEM       mark|marks
+#!DT!# ATS       Austrian Schilling|Austrian Schillings
+#!DT!# CHF       Swiss franc|Swiss francs
+#!DT!# NLG       guilder|guilder
+#!DT!# BEF       Belgian franc|Belgian francs
+#!DT!# LUF       Luxembourg franc|Luxembourg francs
+#!DT!# GBP       pound|pounds
+#!DT!# IEP       Irish Pound|Irish Pounds
+#!DT!# FRF       franc|francs
+#!DT!# ESP       peseta|pesetas
+#!DT!# PTE       escudo|escudos
+#!DT!# ITL       lira|liras
+#!DT!# MTP       Maltese Lira|Maltese Liras
+#!DT!# YUD       Dinar|Dinars
+#!DT!# ROL       lei|leis
+#!DT!# BGL       lev|levs
+#!DT!# ALL       lek|leks
+#!DT!# GRD       drachma|drachmas
+#!DT!# CAD       Canadian dollar|Canadian dollars
+#!DT!# C$        Canadian dollar|Canadian dollars
+#!DT!# USD       U.S. dollar|U.S. dollars
+#!DT!# US$       U.S. dollar|U.S. dollars
+#!DT!# MXP       mexican peso|mexican pesos
+#!DT!# GTQ       quetzal|quetzals
+#!DT!# SVC       Salvador Colon|Salvador Colons
+#!DT!# HNL       lempira|lempiras
+#!DT!# NIC       cordoba|cordobas
+#!DT!# CRC       Costa Rican colon|Costa Rican colons
+#!DT!# PAB       Panamanian Balboa|Panamanian Balboas
+#!DT!# CUP       cuban peso|cuban pesos
+#!DT!# BSD       Bahamian Dollar|Bahamian Dollars
+#!DT!# JMD       Jamaican Dollar|Jamaican Dollars
+#!DT!# HTG       gourde|gourdes
+#!DT!# DOP       Dominican Peso|Dominican Pesos
+#!DT!# TTD       Trinidad and Tobago Dollar|Trinidad and Tobago Dollars
+#!DT!# BBD       Barbados Dollar|Barbados Dollars
+#!DT!# COP       colombian peso|colombian pesos
+#!DT!# VEB       bolivar|bolivars
+#!DT!# GYD       Guyanese Dollar|Guyanese Dollars
+#!DT!# SRG       Surinam guilder|Surinam guilders
+#!DT!# PES       Sol|Sols
+#!DT!# ECS       sucre|sucres
+#!DT!# BRC       cruzeiro|cruzeiros
+#!DT!# BOP       Bolivian Peso|Bolivian Pesos
+#!DT!# CLP       Chilean peso|Chilean pesos
+#!DT!# ARP       Argentine Peso|Argentine Pesos
+#!DT!# PYG       Paraguayan guarani|Paraguayan guarani
+#!DT!# UYP       Uruguayan New Peso|Uruguayan New Pesos
+#!DT!# EGP       Egyptian pound|Egyptian pounds
+#!DT!# LYD       Libyan Dinar|Libyan Dinars
+#!DT!# SDP       Sudanese pound|Sudanese pounds
+#!DT!# TND       Tunisian Dinar|Tunisian Dinars
+#!DT!# DZD       Algerian Dinar|Algerian Dinars
+#!DT!# MAD       Morocco Dirham|Morocco Dirhams
+#!DT!# MRO       Ouguiya|Ouguiyas
+#!DT!# XOF       franc|francs
+#!DT!# GWP       Guinean peso|Guinean pesos
+#!DT!# GNS       Guinean Syli|Guinean Sylis
+#!DT!# SLL       leone|leone
+#!DT!# LRD       Liberian dollar|Liberian dollars
+#!DT!# LR$       Liberian dollar|Liberian dollars
+#!DT!# GHC       cedi|cedis
+#!DT!# NGN       Naira|Nairas
+#!DT!# XAF       franc|francs
+#!DT!# CFAF      franc|francs    
+#!DT!# ZAR       rand|rands
+#!DT!# DJF       franc|francs
+#!DT!# SOS       Somali Shilling|Somali Shillings
+#!DT!# KES       Kenyan Shilling|Kenyan Shillings
+#!DT!# UGS       Ugandan Shilling|Ugandan Shillings
+#!DT!# TZS       Tanzanian Shilling|Tanzanian Shillings
+#!DT!# RWF       franc|francs
+#!DT!# BIF       franc|francs
+#!DT!# ZRZ       Zaire|Zaires
+#!DT!# ZMK       Zambian Kwacha|Zambian Kwachas
+#!DT!# MCF       franc|francs
+#!DT!# SCR       Seychelles Rupee|Seychelles Rupees
+#!DT!# MUR       Mauritian rupee|Mauritian rupees
+#!DT!# ZWD       Zimbabwean dollar|Zimbabwean dollars
+#!DT!# ZW$       Zimbabwean dollar|Zimbabwean dollars
+#!DT!# KMF       franc|francs
+#!DT!# AUD       Australian dollar|Australian dollars
+#!DT!# A$        Australian dollar|Australian dollars
+#!DT!# NZD       new zealand dollar|new zealand dollars
+#!DT!# NZ$       new zealand dollar|new zealand dollars
+#!DT!# FJD       Fijian dollar|Fijian dollars
+#!DT!# FJ$       Fijian dollar|Fijian dollars
+#!DT!# SBD       Solomon Dollar|Solomon Dollars
+#!DT!# SB$       Solomon Dollar|Solomon Dollars
+
+#!DT!# A        ampere|amperes
+#!DT!# BQ       becquerel|becquerels
+#!DT!# CAL      calorie|calories
+#!DT!# KCAL     kilocalorie|kilocalories
+#!DT!# CI       Curie
+#!DT!# MC       megacycle|megacycles
+#!DT!# KC       kilocycle|kilocycles
+#!DT!# C        coulomb
+#!DT!# CD       candela
+#!DT!# DB       decibel|decibels
+#!DT!# DEN      denier
+#!DT!# DENIER   denier
+#!DT!# DYN      dyne
+#!DT!# DEG      degree|degrees
+#!DT!# DR       dram|drams
+#!DT!# ERG      erg|ergs
+#!DT!# FT       foot|feet
+#!DT!# FT²      square foot|square feet
+#!DT!# FT³      cubic foot|cubic feet
+#!DT!# FERMI    Fermi
+#!DT!# G       gram|grams
+#!DT!# DG      decigram|decigrams
+#!DT!# CG      centigram|centigrams
+#!DT!# MG      milligram|milligrams
+#!DT!# μG      microgram|micrograms
+#!DT!# KG      kilogram|kilograms
+#!DT!# DAG     deka-gram|deka-grams
+#!DT!# HG      hectogram|hectograms
+#!DT!# KGS     kilograms
+#!DT!# KGF     kilogram-force|kilogram-forces
+#!DT!# KB      Kilobyte|Kilobytes
+#!DT!# MB      Megabyte|Megabytes
+#!DT!# GB      Gigabyte|Gigabytes
+#!DT!# TB      Trillionbyte|Trillionbytes
+#!DT!# PB      Petabyte|Petabytes
+#!DT!# EB      Exabyte|Exabytes
+#!DT!# ZB      Zettabyte|Zettabytes
+#!DT!# YB      Yottabyte|Yottabytes
+#!DT!# GY       gray|grays
+#!DT!# GS        Gauss
+#!DT!# GR       grain|grains
+#!DT!# HZ       hertz|hertzes
+#!DT!# KHZ      kilo hertz|kilo hertzes
+#!DT!# MHZ      mega hertz|mega hertzes
+#!DT!# GHZ      giga hertz|giga hertzes
+#!DT!# THZ      Trillion hertz|Trillion hertzes
+#!DT!# PHZ      Peta hertz|Peta hertzes
+#!DT!# EHZ      Exa hertz|Exa hertzes
+#!DT!# HA       hectare|hectares
+#!DT!# H㎡      hectare|hectares
+#!DT!# HM2      hectare|hectares
+#!DT!# HM²      hectare|hectares
+#!DT!# IN       inch|inches
+#!DT!# IN²      Square inch|Square inches
+#!DT!# IN³      cubic inch|cubic inches
+#!DT!# J        joule|joules
+#!DT!# KJ       kilojoule|kilojoules
+#!DT!# KN       knob|knobs
+#!DT!# L        liter|liters
+#!DT!# DL       deciliter|deciliters
+#!DT!# CL       centiliter|centiliters
+#!DT!# ML       milliliter|milliliters
+#!DT!# CC       milliliter|milliliters
+#!DT!# DAL      decaliter|decaliters
+#!DT!# HL       hectoliter|hectoliters
+#!DT!# KL       kiloliter|kiloliters
+#!DT!# LX       lux|luxus
+#!DT!# LB       libra|librae
+#!DT!# LM       lumen|lumens
+#!DT!# M       meter|meters
+#!DT!# DM      decimeter|decimeters
+#!DT!# CM      centimeter|centimeters
+#!DT!# MM      millimeter|millimeters
+#!DT!# μM      micrometer|micrometers
+#!DT!# DMM     decimillimeter|decimillimeters
+#!DT!# CMM     centimillimeter|centimillimeters
+#!DT!# MμM     millimicron|millimicrons
+#!DT!# NM      nanometer|nanometers
+#!DT!# FM      femtometer|femtometers
+#!DT!# DAM     decameter|decameters
+#!DT!# HM      hectometer|hectometers
+#!DT!# KM      kilometer|kilometers
+#!DT!# MI      mile|miles
+#!DT!# MILE    mile|miles
+#!DT!# M2      square meter|square meters
+#!DT!# M3      cubic meter|cubic meters
+#!DT!# ㎡      cubic meter|cubic meters
+#!DT!# M²      square meter|square meters
+#!DT!# M³      cubic meter|cubic meters
+#!DT!# DM2     square decimeter|square decimeters
+#!DT!# DM3     cubic decimeter|cubic decimeters
+#!DT!# D㎡      square decimeter|square decimeters
+#!DT!# DM²      square decimeter|square decimeters
+#!DT!# DM³      cubic decimeter|cubic decimeters
+#!DT!# CM2      square centimeter|square centimeters
+#!DT!# CM3      cubic centimeter|cubic centimeters
+#!DT!# C㎡       square centimeter|square centimeters
+#!DT!# CM²       square centimeter|square centimeters
+#!DT!# CM³       cubic centimeter|cubic centimeters
+#!DT!# KM2       square kilometer|square kilometers
+#!DT!# KM3       cubic kilometer|cubic kilometers
+#!DT!# K㎡       square kilometer|square kilometers
+#!DT!# KM²       square kilometer|square kilometers
+#!DT!# KM³       cubic kilometer|cubic kilometers
+#!DT!# MILE²     square mile|square miles
+#!DT!# MILE³     square mile|square miles
+#!DT!# MOL       mole|moles
+#!DT!# MMOL      millimole|millimoles
+#!DT!# μMOL      micromole|micromoles
+#!DT!# NMOL      nanomole|nanomoles
+#!DT!# PMOL      picomole|picomoles
+#!DT!# OE       lenz
+#!DT!# OZ       ounce|ounces
+#!DT!# PA       pascal|pascals
+#!DT!# KPA      kilo pascal|kilo pascals
+#!DT!# MPA      mega pascal|mega pascals
+#!DT!# GPA      giga pascal|giga pascals
+#!DT!# BAR      bar
+#!DT!# MBAR     millibar
+#!DT!# TORR     torr
+#!DT!# ATM      Standard atmospheric
+#!DT!# CMHG     centimeter mercury column
+#!DT!# MMHG     millimeter mercury column
+#!DT!# PH       PH
+#!DT!# RD       rad|rads
+#!DT!# RAD      rad|rads
+#!DT!# REM      rem|rems
+#!DT!# R        R
+#!DT!# SV       SV
+#!DT!# SB       stilb|stilb
+#!DT!# TEX      tex
+#!DT!# TON      ton|tons
+#!DT!# UKGAL    gallon|gallons
+#!DT!# UKQT     quart|quarts
+#!DT!# UKPT     pint|pints
+#!DT!# UKGI     gill|gills
+#!DT!# UKFLOZ   ounce|ounces
+#!DT!# UKFLDR   dram|drams
+#!DT!# UKTON    UK ton|UK tons
+#!DT!# USTON    US ton|US tons
+#!DT!# V        volt|volts
+#!DT!# EV       volt|volts
+#!DT!# W        watt|watts
+#!DT!# KW       kilowatt|kilowatts
+#!DT!# KW·H     kilowatt hour|kilowatt hours
+#!DT!# MW       megawatt|megawatts
+#!DT!# WB       weber
+#!DT!# YD       yard|yards
+#!DT!# YD²      square yard|square yards
+#!DT!# YD³      cubic yard|cubic yards
+
+#!DT!# Y       year|years
+#!DT!# YR      year|years
+#!DT!# H       hour|hours
+#!DT!# HR      hour|hours
+#!DT!# MIN     minute|minutes
+#!DT!# S       second|seconds
+#!DT!# SEC     second|seconds
+
+#!DT!# =       is equal to|are equal to
+#!DT!# ＝       is equal to|are equal to
+#!DT!# :=       is equal to|are equal to
+#!DT!# +=       plus equal to
+#!DT!# -=       minus equal to
+#!DT!# *=       multiply equal to
+#!DT!# /=       divide equal to 
+#!DT!# %=       is equal to|are equal to
+#!DT!# !=       is not equal to|are not equal to
+#!DT!# &=       and equal to
+#!DT!# |=       or equal to
+#!DT!# ^=       xor equal to
+#!DT!# <<=       left shift equal to
+#!DT!# >>=       right shift equal to
+#!DT!# ∷       equals to
+#!DT!# <       is less than|are less than
+#!DT!# ﹤       is less than|are less than
+#!DT!# ＜       is less than|are less than
+#!DT!# >       is more than|are more than
+#!DT!# ﹥       is more than|are more than
+#!DT!# ＞       is more than|are more than
+#!DT!# ≤       is less than or equal to|are less than or equal to
+#!DT!# ≦       is less than or equal to|are less than or equal to
+#!DT!# <=       is less than or equal to|are less than or equal to
+#!DT!# ≯       is less than or equal to|are less than or equal to
+#!DT!# ≥       is more than or equal to|are more than or equal to
+#!DT!# ≧       is more than or equal to|are more than or equal to
+#!DT!# >=       is more than or equal to|are more than or equal to
+#!DT!# ≮       is more than or equal to|are more than or equal to
+#!DT!# ≈       is approximately equal to|are approximately equal to
+#!DT!# ≠       is not equal to|are not equal to
+#!DT!# ＋       plus
+#!DT!# +       plus
+#!DT!# ++      plus plus
+#!DT!# ×       is multiply by|are multiply by
+#!DT!# ÷       is divided by|are divided by
+#!DT!# √       square root
+#!DT!# º       to the zeroth power
+#!DT!# ¹       to the first power
+#!DT!# ²       to the second power
+#!DT!# ³       to the third power
+#!DT!# ±       plus or minus
+#!DT!# ∀       any
+#!DT!# ∪       unite
+#!DT!# ∩       intersection of
+#!DT!# ∫       the integral of
+#!DT!# ∈       belongs to
+#!DT!# ∉       doesn't belong to
+#!DT!# ⊊       is contained in
+#!DT!# ⊋       properly include
+#!DT!# ⊆       is contained in
+#!DT!# ⊇       include
+#!DT!# ⊂       is contained in
+#!DT!# ⊃       include
+#!DT!# ∵       since
+#!DT!# ∴       hence
+#!DT!# ∝       varies as
+#!DT!# ∞       infinity
+#!DT!# ∠       angle
+#!DT!# ∥       is parallel to
+#!DT!# ≌       is equal to|are equal to
+#!DT!# ∽       is similar to
+#!DT!# ⊥       perpendicular to
+#!DT!# ∧       and
+#!DT!# ∨       or
+#!DT!# ‖       or
+#!DT!# ┐       not
+#!DT!# &&       and
+#!DT!# ||       or
+
+#!DT!# ⅟       one
+#!DT!# ½       one half
+#!DT!# ⅓       one third
+#!DT!# ⅕       one fifth
+#!DT!# ⅙       one sixth
+#!DT!# ⅛       one eighth
+#!DT!# ⅔       two thirds
+#!DT!# ⅖       two fifths
+#!DT!# ⅚       five sixth
+#!DT!# ⅜       three eights
+#!DT!# ¾       three quarters
+#!DT!# ⅗       three fifths
+#!DT!# ⅝       five eighths
+#!DT!# ⅞       sevent eighths
+#!DT!# ⅘       four fifths
+
+#!DT!# %       percent
+#!DT!# ％       percent
+#!DT!# ﹪       percent
+#!DT!# ‰        thousandth
+#!DT!# ‱       ten thousandth
+
+#!DT!# ☰       qian
+#!DT!# ☲       li
+#!DT!# ☱       tuan
+#!DT!# ☴       dui
+#!DT!# ☵       kan
+#!DT!# ☶       zhen
+#!DT!# ☳       gen
+#!DT!# ☷       kun
+
+#!DT!# ㋀       january
+#!DT!# ㋁       february
+#!DT!# ㋂       march
+#!DT!# ㋃       april
+#!DT!# ㋄       may
+#!DT!# ㋅       june
+#!DT!# ㋆       july
+#!DT!# ㋇       august
+#!DT!# ㋈       september
+#!DT!# ㋉       october
+#!DT!# ㋊       november
+#!DT!# ㋋       december
+#!DT!# ㏠       the first
+#!DT!# ㏡       the second
+#!DT!# ㏢       the third
+#!DT!# ㏣       the fourth
+#!DT!# ㏤       the fifth
+#!DT!# ㏥       the sixth
+#!DT!# ㏦       the seventh
+#!DT!# ㏧       the eighth
+#!DT!# ㏨       the ninth
+#!DT!# ㏩       the tenth
+#!DT!# ㏪       the eleventh
+#!DT!# ㏫       the twelfth
+#!DT!# ㏬       the thirteenth
+#!DT!# ㏭       the fourteenth
+#!DT!# ㏮       the fifteenth
+#!DT!# ㏯       the sixteenth
+#!DT!# ㏰       the seventeenth
+#!DT!# ㏱       the eighteenth
+#!DT!# ㏲       the nineteenth
+#!DT!# ㏳       the twentieth
+#!DT!# ㏴       the twenty first
+#!DT!# ㏵       the twenty second
+#!DT!# ㏶       the twenty third
+#!DT!# ㏷       the twenty fourth
+#!DT!# ㏸       the twenty fifth
+#!DT!# ㏹       the twenty sixth
+#!DT!# ㏺       the twenty seventh
+#!DT!# ㏻       the twenty eighth
+#!DT!# ㏼       the twenty nineth
+#!DT!# ㏽       the thirtieth
+#!DT!# ㏾       the thirty first
+#!DT!# ㍙       one o'clock
+#!DT!# ㍚       two  o'clock
+#!DT!# ㍛       three o'clock
+#!DT!# ㍜       four o'clock
+#!DT!# ㍝       five o'clock
+#!DT!# ㍞       six o'clock
+#!DT!# ㍟       seven o'clock
+#!DT!# ㍠       eight o'clock
+#!DT!# ㍡       nine o'clock
+#!DT!# ㍢       ten o'clock
+#!DT!# ㍣       eleven o'clock
+#!DT!# ㍤       twelve o'clock
+#!DT!# ㍥       thirteen o'clock
+#!DT!# ㍦       fourteen o'clock
+#!DT!# ㍧       fifteen o'clock
+#!DT!# ㍨       sixteen o'clock
+#!DT!# ㍩       seven o'clock
+#!DT!# ㍪       eighteen o'clock
+#!DT!# ㍫       nineteen o'clock
+#!DT!# ㍬       twenty o'clock
+#!DT!# ㍭       twenty one o'clock
+#!DT!# ㍮       twenty two o'clock
+#!DT!# ㍯       twenty three o'clock
+#!DT!# ㍰       twenty four o'clock
+#!DT!# ㍘       zero o'clock
+
+#!DT!# ㍿       joint-stock company
+
+#!DT!# ○   zeroth、
+#!DT!# ⓪       zeroth、
+#!DT!# ⒈      first、
+#!DT!# ⑴      first、
+#!DT!# ①      first、
+#!DT!# ㊀  first、
+#!DT!# Ⅰ      first、
+#!DT!# ⅰ      first、
+#!DT!# ⒉     second、
+#!DT!# ⑵    second、
+#!DT!# ②    second、
+#!DT!# ㊁  second、
+#!DT!# Ⅱ     second、
+#!DT!# ⅱ     second、
+#!DT!# ⒊    third、
+#!DT!# ⑶    third、
+#!DT!# ③    third、
+#!DT!# ㊂  third、
+#!DT!# Ⅲ    third、
+#!DT!# ⅲ     third、
+#!DT!# ⒋    forth、
+#!DT!# ⑷    forth、
+#!DT!# ④    forth、
+#!DT!# ㊃  forth、
+#!DT!# Ⅳ    forth、
+#!DT!# ⅳ     forth、
+#!DT!# ⒌     fifth、
+#!DT!# ⑸     fifth、
+#!DT!# ⑤     fifth、
+#!DT!# ㊄  fifth、
+#!DT!# Ⅴ     fifth、
+#!DT!# ⅴ     fifth、
+#!DT!# ⒍     sixth、
+#!DT!# ⑹     sixth、
+#!DT!# ⑥     sixth、
+#!DT!# ㊅  sixth、
+#!DT!# Ⅵ     sixth、
+#!DT!# ⅵ     sixth、
+#!DT!# ⒎     seventh、
+#!DT!# ⑺     seventh、
+#!DT!# ⑦     seventh、
+#!DT!# ㊆  seventh、
+#!DT!# Ⅶ     seventh、
+#!DT!# ⅶ     seventh、
+#!DT!# ⒏     eighth、
+#!DT!# ⑻     eighth、
+#!DT!# ⑧     eighth、
+#!DT!# ㊇  eighth、
+#!DT!# Ⅷ      eighth、
+#!DT!# ⅷ      eighth、
+#!DT!# ⒐      ninth、
+#!DT!# ⑼      ninth、
+#!DT!# ⑨      ninth、
+#!DT!# ㊈  ninth、
+#!DT!# Ⅸ      ninth、
+#!DT!# ⅸ      ninth、
+#!DT!# ⒑      ninth、
+#!DT!# ⑽      ninth、
+#!DT!# ⑩      ninth、
+#!DT!# ㊉  tenth、
+#!DT!# Ⅹ     tenth、
+#!DT!# ⅹ     tenth、
+#!DT!# ⒒     eleventh、
+#!DT!# ⑾     eleventh、
+#!DT!# ⑪     eleventh、
+#!DT!# ⒓     twelfth、
+#!DT!# ⑿     twelfth、
+#!DT!# ⑫     twelfth、
+#!DT!# ⒔     thirteenth、
+#!DT!# ⒀     thirteenth、
+#!DT!# ⑬     thirteenth、
+#!DT!# ⒕     fourteenth、
+#!DT!# ⒁     fourteenth、
+#!DT!# ⑭     fourteenth、
+#!DT!# ⒖     fifteenth、
+#!DT!# ⒂     fifteenth、
+#!DT!# ⑮     fifteenth、
+#!DT!# ⒗     sixteenth、
+#!DT!# ⒃     sixteenth、
+#!DT!# ⑯     sixteenth、
+#!DT!# ⒘     seventeenth、
+#!DT!# ⒄     seventeenth、
+#!DT!# ⑰     seventeenth、
+#!DT!# ⒙     eighteenth、
+#!DT!# ⒅     eighteenth、
+#!DT!# ⑱     eighteenth、
+#!DT!# ⒚     ninteenth、
+#!DT!# ⒆     ninteenth、
+#!DT!# ⑲     ninteenth、
+#!DT!# ⒛     twentieth、
+#!DT!# ⒇     twentieth、
+#!DT!# ⑳     twentieth、
+
+#!DT!# Ⓐ    A、
+#!DT!# ⓐ    A、
+#!DT!# ⒜     A、
+#!DT!# Ⓑ    B、
+#!DT!# ⓑ    B、
+#!DT!# ⒝     B、
+#!DT!# Ⓒ    C、
+#!DT!# ⓒ    C、
+#!DT!# ⒞     C、
+#!DT!# Ⓓ    D、
+#!DT!# ⓓ    D、
+#!DT!# ⒟     D、
+#!DT!# Ⓔ    E、
+#!DT!# ⓔ    E、
+#!DT!# ⒠     E、
+#!DT!# Ⓕ    F、
+#!DT!# ⓕ    F、
+#!DT!# ⒡     F、
+#!DT!# Ⓖ    G、
+#!DT!# ⓖ    G、
+#!DT!# ⒢     G、
+#!DT!# Ⓗ    H、
+#!DT!# ⓗ    H、
+#!DT!# ⒣     H、
+#!DT!# Ⓘ    I、
+#!DT!# ⓘ    I、
+#!DT!# ⒤     I、
+#!DT!# Ⓙ    J、
+#!DT!# ⓙ    J、
+#!DT!# ⒥     J、
+#!DT!# Ⓚ    K、
+#!DT!# ⓚ    K、
+#!DT!# ⒦     K、
+#!DT!# Ⓛ    L、
+#!DT!# ⓛ    L、
+#!DT!# ⒧     L、
+#!DT!# Ⓜ    M、
+#!DT!# ⓜ    M、
+#!DT!# ⒨     M、
+#!DT!# Ⓝ    N、
+#!DT!# ⓝ    N、
+#!DT!# ⒩     N、
+#!DT!# Ⓞ    O、
+#!DT!# ⓞ    O、
+#!DT!# ⒪     O、
+#!DT!# Ⓟ    P、
+#!DT!# ⓟ    P、
+#!DT!# ⒫     P、
+#!DT!# Ⓠ    Q、
+#!DT!# ⓠ    Q、
+#!DT!# ⒬     Q、
+#!DT!# Ⓡ    R、
+#!DT!# ⓡ    R、
+#!DT!# ⒭     R、
+#!DT!# Ⓢ    S、
+#!DT!# ⓢ    S、
+#!DT!# ⒮     S、
+#!DT!# Ⓣ    T、
+#!DT!# ⓣ    T、
+#!DT!# ⒯     T、
+#!DT!# Ⓤ    U、
+#!DT!# ⓤ    U、
+#!DT!# ⒰     U、
+#!DT!# Ⓥ    V、
+#!DT!# ⓥ    V、
+#!DT!# ⒱     V、
+#!DT!# Ⓦ    W、
+#!DT!# ⓦ    W、
+#!DT!# ⒲     W、
+#!DT!# Ⓧ    X、
+#!DT!# ⓧ    X、
+#!DT!# ⒳     X、
+#!DT!# Ⓨ    Y、
+#!DT!# ⓨ    Y、
+#!DT!# ⒴     Y、
+#!DT!# Ⓩ    Z、
+#!DT!# ⓩ    Z、
+#!DT!# ⒵     Z、
+
+#!DT!# CO.     company
+#!DT!# CO.,    corporation
+#!DT!# LTD     limited
+#!DT!# CORP.   Corp
+#!DT!# DR      doctor
+#!DT!# DR.     doctor
+#!DT!# JUDG.   judge
+#!DT!# KEN.    ken
+#!DT!# L.A.    Los Angeles
+#!DT!# LAB.    lab
+#!DT!# LTD.    limited
+#!DT!# MGR.    manager
+#!DT!# MR.     mister
+#!DT!# MRS.    mistress
+#!DT!# MS.     miss
+#!DT!# MR      mister
+#!DT!# MRS     mistress
+#!DT!# MS      miss
+#!DT!# NO.     number
+#!DT!# OXON.   Oxon
+#!DT!# PROF.   prof
+#!DT!# ST.     saint
+#!DT!# TEX.    tex
+#!DT!# VIZ.    viz
+#!DT!# YD.     yard
+#!DT!# INT'L   international
+#!DT!# VS.     versus
+#!DT!# CAP.    Chapter
+#!DT!# PLZ     please
+#!DT!# O'ER    over
+
+#!DT!# ≥v≤     ha ha!
+#!DT!# @≥v≤@     ha ha!
+#!DT!# #≥v≤#     ha ha!
+#!DT!# =≥v≤=     ha ha!
+#!DT!# (≥v≤)     ha ha!
+
+#!DT!# >_<     ha ha!
+#!DT!# @>_<@     ha ha!
+#!DT!# #>_<#     ha ha!
+#!DT!# =>_<=     ha ha!
+#!DT!# (>_<)     ha ha!
+
+#!DT!# ^_^     ha ha!
+#!DT!# @^_^@     ha ha!
+#!DT!# #^_^#     ha ha!
+#!DT!# =^_^=     ha ha!
+#!DT!# (^_^)     ha ha!
+
+#!DT!# ^v^     ha ha!
+#!DT!# @_@     ha ha!
+#!DT!# ⊙﹏⊙     ha ha!
+#!DT!# ⊙_⊙     ha ha!
+#!DT!# ⊙o⊙     ha ha!
+#!DT!# ^◎^     ha ha!
+#!DT!# ∩__∩ ha ha!
+#!DT!# O(∩_∩)O     ha ha!
+
+#!DT!# *^◎^*     ha ha!
+#!DT!# *^÷^*     ha ha!
+
+#!DT!# (⊙﹏⊙)     ha ha!
+#!DT!# (⊙_⊙)     ha ha!
+#!DT!# (⊙o⊙)     ha ha!
+#!DT!# (^o^)     ha ha!
+#!DT!# (^◎^)     ha ha!
+
+#!DT!# ㄒoㄒ          oh!
+#!DT!# (ㄒoㄒ)     oh!
+
+#!DT!# ○▁○        oh!
+
+#!DT!# ☆_☆        wow!
+#!DT!# (☆_☆)       wow!
+
+#!DT!# ╯﹏╰       wow!
+#!DT!# (╯﹏╰)     wow!
+
+#!DT!# +﹏+       wow!
+#!DT!# (+﹏+)     wow!
+
+#!DT!# ~^o^~      wow!
+
+###############################################################################
+# 缺省处理
+###############################################################################
+# 汉字缺省处理
+1?1H:t<1>;
+# 英文缺省处理
+1?1Y:y<1>;
+# 符号缺省处理
+1?1F:f<1>;
+# 数字缺省处理
+1?1S:s<1>;
+2?1S 1c>4:s<1>;
+2?1S 1c<5:m<1>;
+3?1S 1h}1"0":o<1>;
+
+# 数值缺省处理
+2?1M:m<1>;
+
+###############################################################################
+# 年月日时间范围处理
+###############################################################################
+${yf} = JANUARY^FEBRUARY^MARCH^APRIL^MAY^JUNE^JULY^AUGUST^SEPTEMBER^OCTOBER^NOVEMBER^DECEMBER
+${yc} = JAN^FEB^MAR^APR^MAY^JUN^JUL^AUG^SEP^SEPT^OCT^NOV^DEC
+${ds} = TH^ST^ND^RD
+${wk} = MON^TUE^TUES^WED^THU^THUR^FRI^SAT^SUN^
+
+# 默认年代
+3?1S 1z>1700 1z<2100:n<1>;
+150?1S 2Y 1z>1900 1z<2100 1t#1"0" 2b#"s":n<1><s>;
+
+# 关键字 : AC/BC
+63?1S 2Y 2d#"AC^BC":n<1>;y<2>;
+90?1F 2S 3Y 1b{"--——–〜~～/／" 3d#"AC^BC":y<to>;y<the>;n<2>;y<3>;
+
+# 关键字 : YEAR/DAY
+66?1S 2Y 2d#"YEAR^YEARS^DAYS^DAY":m<1>;y<2>;
+66?1Y 2S 1d#"IN^ON^OF^UNTIL^FROM" 2z>1000 2z<2200 :y<1>;n<2>;
+10?1Y 2S 1d#"THE" 2z>1800 2z<2200 :y<1>;n<2>;
+70?1Y 2S 3Y 1d#"IN^ON^OF" 2z>1800 2z<2200 3b#"s" :y<1>;n<2><3>;
+70?1Y 2S 3F 4Y 1d#"IN" 2z>1800 2z<2200 3b#"'" 4b#"s" :y<1>;n<2><3>;
+
+66?1Y 2S 3Y 4S 1d#"IN" 2z>1000 2z<2200 3d#"AND" 4z>1000 4z<2200 :y<1>;n<2>;y<3>;n<4>;
+70?1Y 2S 3Y 4Y 5S 6Y 1d#"IN" 2z>1000 2z<2200 3b#"s" 4d#"AND" 5z>1000 5z<2200 6b#"s" :y<1>;n<2><3>;y<4>;n<5><6>;
+
+70?1S 2F 3Y 4Y 5S 6F 7Y 1z>1000 1z<2200 2b#"'" 3d#"s" 4d#"AND" 5z>1000 5z<2200 6b#"'" 7d#"s" :y<1>;n<2><3>;
+
+# 关键字 : at/by/in/for/since/before
+66?1Y 2S 1d#"AT^BY^IN^FOR^SINCE^BEFORE" 2z>1000 2z<2100:y<1>;n<2>;
+
+# 年代 : pre-20th / pre-1900s / mid-30s
+123?1Y 2F 3S 4Y 1d#"PRE^OVER^NEARLY^MID^LATE" 2b{"-——" 3c<3 4d#"${ds}":y<1>;f<2>;x<3>;
+123?1Y 2F 3S 4Y 1d#"MID^PRE" 2b#"-" 3c<5 3c>1 3t}1"0" 4d#"S":y<1>;f<2>;n<3><s>;
+123?1Y 2S 3Y 1d#"PRE^OVER^NEARLY^MID^LATE" 2c<5 2c>1 2t}1"0" 3d#"S":y<1>;n<2><s>;
+
+# 年代 : 1990's
+93?1S 2F 3Y 1t#1"0" 2b#"'" 3b#"s":n<1><'s>;
+93?1Y 2S 3Y 1d#"THE" 2z<2200 3b#"s":y<1>;n<2><s>;
+# 星期
+60?1Y 2F 1d#"${wk}" 2b#".":d<1>;
+
+# 1992~2002 ~2002
+90?1S 2F 3S 2b{"-——〜~～--–/／" 1z<2100 1z>1000 3z<2100 3z>1000:n<1>;y<to>;n<3>;
+60?1F 2S 2b{"-——〜~～--–/／" 2z<2100 2z>1000:y<to>;n<2>;
+90?1S 2Y 3S 2d#"TO" 1z<2100 1z>1000 3z<2100 3z>1000:n<1>;y<2>;n<3>;
+90?1Y 2S 3F 4S 3b{"-——〜~～--–/／" 2c=4 4z<2100:y<1>;n<2>;y<to>;n<4>;
+
+# April 2nd, xxxx
+180?1Y 2S 3Y 4F 5S 1d#"${yf}" 2z>0 2z<32 3d#"${ds}" 4b{",/" 5c=4:y<1>;y<the>;x<2>;f<,>;n<5>;
+140?1Y 2S 3Y 1d#"${yf}" 2z>0 2z<32 3d#"${ds}":y<1>;y<the>;x<2>;
+
+# April 2, xxxx
+140?1Y 2S 3F 4S 1d#"${yf}" 2z>0 2z<32 3b{",/" 4c=4:y<1>;y<the>;x<2>;f<,>;n<4>;
+80?1Y 2S 1d#"${yf}" 2z>0 2z<32:y<1>;y<the>;x<2>;
+
+# 2nd, April, xxxx
+210?1S 2Y 3F 4Y 5F 6S 1z>0 1z<32 2d#"${ds}" 3b{",/" 4d#"${yf}" 5b{",/" 6c=4:y<the>;x<1>;y<4>;f<,>;n<6>;
+140?1S 2Y 3F 4Y 1z>0 1z<32 2d#"${ds}" 3b{",/" 4d#"${yf}":y<the>;x<1>;y<4>;
+
+# 2, April, xxxx
+170?1S 2F 3Y 4F 5S 1z>0 1z<32 2b{",/" 3d#"${yf}" 4b{",/" 5c=4:y<the>;x<1>;y<3>;f<,>;n<5>;
+120?1S 2F 3Y 1z>0 1z<32 2b{",/" 3d#"${yf}":y<the>;y<1>;y<3>;
+
+# Apr. 2nd, xxxx
+210?1Y 2F 3S 4Y 5F 6S 1d#"${yc}" 2b#"." 3z>0 3z<32 4d#"${ds}" 5b{",/" 6c=4:d<1>;y<the>;x<3>;f<,>;n<6>;
+140?1Y 2F 3S 4Y 1d#"${yc}" 2b#"." 3z<32 4d#"${ds}":d<1>;y<the>;x<3>;
+
+# Apr. 2, xxxx
+170?1Y 2F 3S 4F 5S 1d#"${yc}" 2b#"." 3z>0 3z<32 4b{",/" 5c=4:d<1>;y<the>;x<3>;f<,>;n<5>;
+120?1Y 2F 3S 1d#"${yc}" 2b#"." 3z>0 3z<32:d<1>;y<the>;x<3>;
+
+# 2nd, Apr., xxxx
+230?1S 2Y 3F 4Y 5F 6F 7S 1z>0 1z<32 2d#"${ds}" 3b#"," 4d#"${yc}" 5b#"." 6b#"," 7c=4:y<the>;x<1>;d<4>;f<,>;n<7>;
+170?1S 2Y 3F 4Y 5F 1z>0 1z<32 2d#"${ds}" 3b#"," 4d#"${yc}" 5b#".":y<the>;x<1>;d<4>;
+
+#10 May 1905 – 20 April 1943
+200?1S 2Y 3S 1z>0 1z<32 2d#"${yf}" 3c=4:x<1>;y<2>;n<3>;
+200?1S 2Y 3S 1z>0 1z<32 2d#"${yc}" 3c=4:x<1>;d<2>;n<3>;
+200?1Y 2S 3S 1d#"${yf}" 2z>0 2z<32 3c=4:y<1>;x<2>;n<3>;
+200?1Y 2S 3S 1d#"${yc}" 2z>0 2z<32 3c=4:d<1>;x<2>;n<3>;
+#230?1S 2Y 3S 4F 5S 6Y 7S 1z>0 1z<32 2d#"${yf}" 3c=4 4b{"-——〜~～--–/／" 5z>0 5z<32 6d#"${yf}" 7c=4:x<1>;y<2>;n<3>;y<to>;x<5>;y<6>;n<7>;
+#230?1S 2Y 3S 4F 5S 6Y 7S 1z>0 1z<32 2d#"${yc}" 3c=4 4b{"-——〜~～--–/／" 5z>0 5z<32 6d#"${yc}" 7c=4:x<1>;d<2>;n<3>;y<to>;x<5>;d<6>;n<7>;
+#230?1Y 2S 3S 4F 5Y 6S 7S 2z>0 2z<32 1d#"${yf}" 3c=4 4b{"-——〜~～--–/／" 6z>0 6z<32 5d#"${yf}" 7c=4:y<1>;x<2>;n<3>;y<to>;y<5>;x<6>;n<7>;
+#230?1Y 2S 3S 4F 5Y 6S 7S 2z>0 2z<32 1d#"${yc}" 3c=4 4b{"-——〜~～--–/／" 6z>0 6z<32 5d#"${yc}" 7c=4:d<1>;x<2>;n<3>;y<to>;d<5>;x<6>;n<7>;
+#1905 – 20 April 1943
+230?1S 2F 3S 4Y 5S 1c=4 2b{"-——〜~～--–/／" 3z>0 3z<32 4d#"${yf}" 5c=4:n<1>;y<to>;x<3>;y<4>;n<5>;
+230?1S 2F 3S 4Y 5S 1c=4 2b{"-——〜~～--–/／" 3z>0 3z<32 4d#"${yc}" 5c=4:n<1>;y<to>;x<3>;d<4>;n<5>;
+230?1S 2F 3Y 4S 5S 1c=4 2b{"-——〜~～--–/／" 4z>0 4z<32 3d#"${yf}" 5c=4:n<1>;y<to>;y<3>;x<4>;n<5>;
+230?1S 2F 3Y 4S 5S 1c=4 2b{"-——〜~～--–/／" 4z>0 4z<32 3d#"${yc}" 5c=4:n<1>;y<to>;d<3>;x<4>;n<5>;
+
+#10 May – 20 April 1943
+230?1S 2Y 3F 4S 5Y 1z>0 1z<32 2d#"${yf}" 3b{"-——〜~～--–/／" 4z>0 4z<32 5d#"${yf}":x<1>;y<2>;y<to>;x<4>;y<5>;
+230?1S 2Y 3F 4S 5Y 1z>0 1z<32 2d#"${yc}" 3b{"-——〜~～--–/／" 4z>0 4z<32 5d#"${yc}":x<1>;d<2>;y<to>;x<4>;d<5>;
+230?1Y 2S 3F 4Y 5S 2z>0 2z<32 1d#"${yf}" 3b{"-——〜~～--–/／" 5z>0 5z<32 4d#"${yf}":y<1>;x<2>;y<to>;y<4>;x<5>;
+230?1Y 2S 3F 4Y 5S 2z>0 2z<32 1d#"${yc}" 3b{"-——〜~～--–/／" 5z>0 5z<32 4d#"${yc}":d<1>;x<2>;y<to>;d<4>;x<5>;
+
+
+#died 1529
+100?1Y 2S 1d#"DIED^BORN" 2z<2019 2c=4:y<1>;n<2>;
+100?1Y 2Y 3S 1d#"DIED^BORN" 2d#"IN" 3z<2019 3c=4:y<1>;n<3>;
+
+#died 5 24,1529
+100?1Y 2S 3S 4F 5S 1d#"DIED^BORN" 2z<13 3z<32 4b#"," 5z<2019 5c=4:y<1>;u<2>;x<3>;f<4>;n<5>;
+100?1Y 2Y 3S 4S 5F 6S 1d#"DIED^BORN" 2d#"IN" 3z<13 4z<32 5b#"," 6z<2019 6c=4:y<1>;y<2>;u<3>;x<4>;f<5>;n<6>;
+
+#in/of June 1899
+100?1Y 2Y 3S 1d#"IN^OF^ON" 2d#"${yf}" 3c=4:y<1>;y<2>;n<3>;
+100?1Y 2Y 3S 1d#"IN^OF^ON" 2d#"${yc}" 3c=4:y<1>;d<2>;n<3>;
+100?1Y 2Y 3F 4S 1d#"IN^OF^ON" 2d#"${yc}" 3b#"." 4c=4:y<1>;d<2>;n<4>;
+
+100?1Y 2Y 3Y 4S 1d#"IN^OF^ON" 2d#"THE" 3d#"${yf}" 4c=4:y<1>;y<2>;y<3>;n<4>;
+100?1Y 2Y 3Y 4S 1d#"IN^OF^ON" 2d#"THE" 3d#"${yc}" 4c=4:y<1>;y<2>;d<3>;n<4>;
+100?1Y 2Y 3Y 4F 5S 1d#"IN^OF^ON" 2d#"THE" 3d#"${yc}" 4b#"." 5c=4:y<1>;y<2>;d<3>;n<5>;
+
+#in/of 5 June
+100?1Y 2S 3Y 1d#"IN^OF^ON" 2z>0 2z<32 3d#"${yf}":y<1>;x<2>;y<3>;
+100?1Y 2S 3Y 1d#"IN^OF^ON" 2z>0 2z<32 3d#"${yc}":y<1>;x<2>;d<3>;
+100?1Y 2S 3Y 4F 1d#"IN^OF^ON" 2z>0 2z<32 3d#"${yc}" 4b#".":y<1>;x<2>;d<3>;
+
+100?1Y 2Y 3S 1d#"IN^OF^ON" 2d#"${yf}" 3z>0 3z<32:y<1>;y<2>;x<3>;
+100?1Y 2Y 3S 1d#"IN^OF^ON" 2d#"${yc}" 3z>0 3z<32:y<1>;d<2>;x<3>;
+100?1Y 2Y 3F 4S 1d#"IN^OF^ON" 2d#"${yc}" 3b#"." 4z>0 4z<32:y<1>;d<2>;x<4>;
+
+#On 27/28 August 1918
+100?1Y 2S 3F 4S 5Y 6S 1d#"IN^ON" 2z>0 2z<32 3b{"-——〜~～--–/／" 4z>0 4z<32 5d#"${yf}" 6c=4:y<1>;x<2>;f<3>;x<4>;y<5>;n<6>;
+100?1Y 2S 3F 4S 5Y 6S 1d#"IN^ON" 2z>0 2z<32 3b{"-——〜~～--–/／" 4z>0 4z<32 5d#"${yc}" 6c=4:y<1>;x<2>;f<3>;x<4>;d<5>;n<6>;
+100?1Y 2S 3F 4S 5Y 6F 7S 1d#"IN^ON" 2z>0 2z<32 3b{"-——〜~～--–/／" 4z>0 4z<32 5d#"${yc}" 6b#"." 7c=4:y<1>;x<2>;f<3>;x<4>;d<5>;n<7>;
+
+# 日期范围
+# Oct. 2-8
+180?1Y 2F 3S 4F 5S 1d#"${yc}" 2b#"." 4b{"-——〜~～--–/／" 3z>0 3z<32 5z>0 5z<32:d<1>;y<the>;x<3>;y<to the>;x<5>;
+# October
+140?1Y 2S 3F 4S 1d#"${yf}" 3b{"-——〜~～--–/／" 2z>0 2z<32 4z>0 4z<32:y<1>;y<the>;x<2>;y<to the>;x<4>;
+
+
+# 自动判断月日01/01
+89?1S 2F 3S 1c=2 3c=2 1z>0 3z>0 1z<32 3z<32 1h#1"0" 3h#1"0" 2b#"/^-":u<1>;y<the>;x<3>;
+90?1S 2F 3S 1c=2 3c=2 1z>0 3z>0 1z<32 3z<32 1h#1"0" 3h!1"0" 2b#"/^-":u<1>;y<the>;x<3>;
+91?1S 2F 3S 1c=2 3c=2 1z>0 3z>13 1z<13 3z<32 2b#"/^-":u<1>;y<the>;x<3>;
+90?1S 2F 3S 1c=2 3c=2 1z>0 3z>0 1z<32 3z<32 1h!1"0" 3h#1"0" 2b#"/^-":u<3>;y<the>;x<1>;
+91?1S 2F 3S 1c=2 3c=2 1z>13 3z>0 1z<32 3z<13 2b#"/^-":u<3>;y<the>;x<1>;
+
+# 自动判断年月日01/01/01 : M/D/Y D/M/Y
+99?1S 2F 3S 4F 5S 1c=2 3c=2 5c=2 1z>0 3z>0 1z<32 3z<32 1h#1"0" 3h#1"0" 2b#"/^-" 4b#"/^-":u<1>;y<the>;x<3>;f<,>;n<5>;
+100?1S 2F 3S 4F 5S 1c=2 3c=2 5c=2 1z>0 3z>0 1z<32 3z<32 1h#1"0" 3h!1"0" 2b#"/^-" 4b#"/^-":u<1>;y<the>;x<3>;f<,>;n<5>;
+101?1S 2F 3S 4F 5S 1c=2 3c=2 5c=2 1z>0 3z>13 1z<13 3z<32 2b#"/^-" 4b#"/^-":u<1>;y<the>;x<3>;f<,>;n<5>;
+100?1S 2F 3S 4F 5S 1c=2 3c=2 5c=2 1z>0 3z>0 1z<32 3z<32 1h!1"0" 3h#1"0" 2b#"/^-" 4b#"/^-":u<3>;y<the>;x<1>;f<,>;n<5>;
+101?1S 2F 3S 4F 5S 1c=2 3c=2 5c=2 1z>13 3z>0 1z<32 3z<13 2b#"/^-" 4b#"/^-":u<3>;y<the>;x<1>;f<,>;n<5>;
+
+# 自动判断年月日01/01/2013 : M/D/Y D/M/Y
+110?1S 2F 3S 4F 5S 1c=2 3c=2 5c=4 1z>0 3z>0 1z<32 3z<32 5z<2100 5z>1000 1h#1"0" 3h#1"0" 2b#"/^-" 4b#"/^-":u<1>;y<the>;x<3>;f<,>;n<5>;
+111?1S 2F 3S 4F 5S 1c=2 3c=2 5c=4 1z>0 3z>0 1z<32 3z<32 5z<2100 5z>1000 1h#1"0" 3h!1"0" 2b#"/^-" 4b#"/^-":u<1>;y<the>;x<3>;f<,>;n<5>;
+112?1S 2F 3S 4F 5S 1c=2 3c=2 5c=4 1z>0 3z>13 1z<13 3z<32 5z<2100 5z>1000 2b#"/^-" 4b#"/^-":u<1>;y<the>;x<3>;f<,>;n<5>;
+111?1S 2F 3S 4F 5S 1c=2 3c=2 5c=4 1z>0 3z>0 1z<32 3z<32 5z<2100 5z>1000 1h!1"0" 3h#1"0" 2b#"/^-" 4b#"/^-":u<3>;y<the>;x<1>;f<,>;n<5>;
+112?1S 2F 3S 4F 5S 1c=2 3c=2 5c=4 1z>13 3z>0 1z<32 3z<13 5z<2100 5z>1000 2b#"/^-" 4b#"/^-":u<3>;y<the>;x<1>;f<,>;n<5>;
+
+# 自动判断年月日01/01/2013 : Y/M/D Y/D/M
+110?1S 2F 3S 4F 5S 1c=4 3c=2 5c=2 1z>0 3z>0 1z<32 3z<32 5z<2100 5z>1000 1h#1"0" 3h#1"0" 2b#"/^-" 4b#"/^-":u<1>;y<the>;x<3>;f<,>;n<5>;
+111?1S 2F 3S 4F 5S 1c=4 3c=2 5c=2 1z>0 3z>0 1z<32 3z<32 5z<2100 5z>1000 1h#1"0" 3h!1"0" 2b#"/^-" 4b#"/^-":u<1>;y<the>;x<3>;f<,>;n<5>;
+112?1S 2F 3S 4F 5S 1c=4 3c=2 5c=2 1z>0 3z>13 1z<13 3z<32 5z<2100 5z>1000 2b#"/^-" 4b#"/^-":u<1>;y<the>;x<3>;f<,>;n<5>;
+111?1S 2F 3S 4F 5S 1c=4 3c=2 5c=2 1z>0 3z>0 1z<32 3z<32 5z<2100 5z>1000 1h!1"0" 3h#1"0" 2b#"/^-" 4b#"/^-":u<3>;y<the>;x<1>;f<,>;n<5>;
+112?1S 2F 3S 4F 5S 1c=4 3c=2 5c=2 1z>13 3z>0 1z<32 3z<13 5z<2100 5z>1000 2b#"/^-" 4b#"/^-":u<3>;y<the>;x<1>;f<,>;n<5>;
+
+# 3·17
+50?1S 2F 3S 1c<3 1z<13 3c<3 3z<32 2b#"·^．":u<1>;y<the>;x<3>;
+
+
+###############################################################################
+# 时间范围处理
+###############################################################################
+
+# 11:30
+100?1S 2F 3S 1z<25 3z<60 2b#":":j<1><2><3>;
+
+# 11:30:00
+120?1S 2F 3S 4F 5S 1z<25 3z<60 5z<60 2b#":" 4b#":":j<1><2><3><4><5>;
+
+# 11:30 am / pm
+140?1S 2F 3S 4Y 1z<25 3z<60 2b#":" 4d#"AM^PM":j<1><2><3>;d<4>;
+
+# 11:30:00 am / pm
+200?1S 2F 3S 4F 5S 6Y 1z<25 3z<60 5z<60 2b#":" 4b#":" 6d#"AM^PM":j<1><2><3><4><5>;d<6>;
+
+# 11:30 a.m. / p.m.
+140?1S 2F 3S 4Y 5F 6Y 7F 1z<25 3z<60 2b#":" 4d#"A^P" 5b#"." 6d#"M" 7b#".":j<1><2><3>;d<4><5><6><7>;
+
+# 11:30:00 a.m. / p.m.
+230?1S 2F 3S 4F 5S 6Y 7F 8Y 9F 1z<25 3z<60 5z<60 2b#":" 4b#":" 6d#"A^P" 7b#"." 8d#"M" 9b#".":j<1><2><3><4><5>;d<6><7><8><9>;
+
+# 11:30~12:00
+210?1S 2F 3S 4F 5S 6F 7S 1z<25 3z<60 5z<24 7z<60 2b#":" 6b#":" 4b{"--——–/／〜~～":j<1><2><3>;y<to>;j<5><6><7>;
+
+# 11:30~12:00 am / pm
+220?1S 2F 3S 4F 5S 6F 7S 8Y 1z<25 3z<60 5z<24 7z<60 2b#":" 6b#":" 4b{"--——–/／〜~～" 8d#"AM^PM":j<1><2><3>;y<to>;j<4><5><6>;d<8>;
+
+# ~12:00
+130?1F 2S 3F 4S 1b{"--——–/／〜~～" 2z<25 4z<60 3b#":":y<to>;j<2><3><4>;
+
+# ~12:00:00
+220?1F 2S 3F 4S 5F 6S 1b{"--——–/／〜~～" 2z<25 4z<60 6z<60 3b#":" 5b#":":y<to>;j<2><3><4><5><6>;
+
+# ~12:00 am /pm
+160?1F 2S 3F 4S 5Y 1b{"--——–/／〜~～" 2z<25 4z<60 3b#":" 5d#"AM^PM":y<to>;j<2><3><4>;d<5>;
+
+# ~12:00:00 am/pm
+210?1F 2S 3F 4S 5F 6S 7Y 1b{"--——–/／〜~～" 2z<25 4z<60 6z<60 3b#":" 5b#":" 7d#"AM^PM":y<to>;j<2><3><4><5><6>;d<7>;
+
+# 13 AM / PM
+66?1S 2Y 1z<25 2d#"AM^PM":m<1>;d<2>;
+
+# 03 a.m. / 13 p.m.
+150?1S 2Y 3F 4Y 5F 1z<25 2d#"A^P" 3b#"." 4d#"M" 5b#".":m<1>;d<2><3><4><5>;
+
+# 7-9 am / a.m.
+140?1S 2F 3S 4Y 1z<24 2b{"--——–/／〜~～" 3z<25 4d#"AM^PM":m<1>;y<to>;m<3>;d<4>;
+240?1S 2F 3S 4Y 5F 6Y 7F 1z<24 2b{"--——–/／〜~～" 3z<25 4d#"A^P" 5b#"." 6d#"M" 7b#".":m<1>;y<to>;m<3>;d<4><5><6><7>;
+
+# 1:30-6 / 9-10:30
+150?1S 2F 3S 4F 5S 1z<24 3z<60 5z<24 2b#":" 4b{"--——–/／〜~～":j<1><2><3>;y<to>;m<5>;
+150?1S 2F 3S 4F 5S 1z<24 3z<24 5z<60 4b#":" 2b{"--——–/／〜~～":m<1>;y<to>;j<3><4><5>;
+
+###############################################################################
+# 温度范围处理
+###############################################################################
+
+10?1F 1b#"°^℃^℉":d<1>;
+22?1F 2Y 1b#"°" 2d#"C^F^K":d<1><2>;
+
+# * degrees
+52?1M 2F 2b#"°^℃^℉":m<1>;d<2>;
+53?1M 2F 3Y 2b#"°" 3d#"C^F^K":m<1>;d<2><3>;
+
+# minus * degrees
+83?1F 2M 3F 1b{"-－" 3b#"°^℃^℉":y<minus>;m<2>;d<3>;
+84?1F 2M 3F 4Y 1b{"-－" 3b#"°" 4d#"C^F^K":y<minus>;m<2>;d<3>;d<4>;
+83?1F 2M 3Y 1b{"-－" 3d#"DEGRESS":y<minus>;m<2>;y<3>;
+
+# m~m°
+204?1M 2F 3M 4F 2b{"--——–〜~～–/／" 4b#"°^℃^℉":m<1>;y<to>;m<3>;d<4>;
+205?1F 2M 3F 4M 5F 1b{"-—－" 3b{"--——–〜~～–/／" 5b#"°^℃^℉":y<minus>;m<2>;y<to>;m<4>;d<5>;
+205?1M 2F 3F 4M 5F 2b{"--——–〜~～–/／" 3b{"-—－" 5b#"°^℃^℉":m<1>;y<to minus>;m<4>;d<5>;
+206?1F 2M 3F 4F 5M 6F 1b{"-—－" 3b{"--——–〜~～–/／" 4b{"-—－–" 6b#"°^℃^℉":y<minus>;m<2>;y<to minus>;m<5>;d<6>;
+205?1M 2F 3F 4M 5F 2b#"°^℃^℉" 3b{"--——–〜~～–/／" 5b#"°^℃^℉":m<1>;y<to>;m<4>;d<5>;
+206?1F 2M 3F 4F 5M 6F 1b{"-—－" 3b#"°^℃^℉" 4b{"--——–〜~～–/／" 6b#"°^℃^℉":y<minus>;m<2>;d<3>;y<to>;m<5>;d<6>;
+206?1M 2F 3F 4F 5M 6F 2b#"°^℃^℉" 3b{"--——–〜~～–/／" 4b{"-—－–" 6b#"°^℃^℉":m<1>;d<2>;y<to minus>;m<5>;d<6>;
+207?1F 2M 3F 4F 5F 6M 7F 1b{"-—－" 3b#"°^℃^℉" 4b{"--——–〜~～–/／" 5b{"-—－–" 7b#"°^℃^℉":y<minus>;m<2>;d<3>;y<to minus>;m<6>;d<7>;
+
+# m~m°C
+205?1M 2F 3M 4F 5Y 2b{"--——–〜~～–/／" 4b#"°" 5d#"C^F^K":m<1>;y<to>;m<3>;d<4><5>;
+206?1F 2M 3F 4M 5F 6Y 1b{"-—－" 3b{"--——–〜~～–/／" 5b#"°" 6d#"C^F^K":y<minus>;m<2>;y<to>;m<4>;d<5><6>;
+206?1M 2F 3F 4M 5F 6Y 2b{"--——–〜~～–/／" 3b{"-—－–"  5b#"°" 6d#"C^F^K":m<1>;y<to minus>;m<4>;d<5><6>;
+207?1F 2M 3F 4F 5M 6F 7Y 1b{"-—－–" 3b{"--——–〜~～–/／" 4b{"-—－" 6b#"°" 7d#"C^F^K":y<minus>;m<2>;y<to minus>;m<5>;d<6><7>;
+207?1M 2F 3Y 4F 5M 6F 7Y 2b#"°" 3d#"C^F^K" 4b{"--——–〜~～–/／" 6b#"°" 7d#"C^F^K":m<1>;d<2><3>;y<to>;m<5>;d<6><7>;
+208?1F 2M 3F 4Y 5F 6M 7F 8Y 1b{"-—" 3b#"°" 4d#"C^F^K" 5b{"--——–〜~～–/／"  7b#"°" 8d#"C^F^K":y<minus>;m<2>;d<3><4>;y<to>;m<6>;d<7><8>;
+208?1M 2F 3Y 4F 5F 6M 7F 8Y 2b#"°" 3d#"C^F^K" 4b{"--——–〜~～–/／" 5b{"-—" 7b#"°" 8d#"C^F^K":m<1>;d<2><3>;y<to minus>;m<6>;d<7><8>;
+209?1F 2M 3F 4Y 5F 6F 7M 8F 9Y 1b{"-—－" 3b#"°" 4d#"C^F^K" 5b{"--——–〜~～–/／" 6b{"-—-" 8b#"°" 9d#"C^F^K":y<minus>;m<2>;d<3><4>;y<to minus>;m<7>;d<8><9>;
+
+# m~m degrees
+204?1M 2F 3M 4Y 2b{"--——–〜~～–/／" 4d#"DEGRESS":m<1>;y<to>;m<3>;y<4>;
+205?1F 2M 3F 4M 5Y 1b{"-—－" 3b{"--——–〜~～–/／" 5d#"DEGRESS":y<minus>;m<2>;y<to>;m<4>;y<5>;
+205?1M 2F 3F 4M 5Y 2b{"--——–〜~～–/／" 3b{"-—－–" 5d#"DEGRESS":m<1>;y<to minus>;m<4>;y<5>;
+206?1F 2M 3F 4F 5M 6Y 1b{"-—－–" 3b{"--——–〜~～–/／" 4b{"-—－–" 6d#"DEGRESS":y<minus>;m<2>;y<to minus>;m<5>;y<6>;
+205?1M 2Y 3F 4M 5Y 2d#"DEGRESS" 3b{"--——–〜~～–/／" 5d#"DEGRESS":m<1>;y<2>;y<to>;m<4>;y<5>;
+206?1F 2M 3Y 4F 5M 6Y 1b{"-—－–" 3d#"DEGRESS" 4b{"--——–〜~～–/／" 6d#"DEGRESS":y<minus>;m<2>;y<3>;y<to>;m<5>;y<6>;
+206?1M 2Y 3F 4F 5M 6Y 2d#"DEGRESS" 3b{"--——–〜~～–/／" 4b{"-—－–" 6d#"DEGRESS":m<1>;y<2>;y<to minus>;m<5>;y<6>;
+207?1F 2M 3Y 4F 5F 6M 7Y 1b{"-—－–" 3d#"DEGRESS" 4b{"--——–〜~～–/／" 5b{"-—－–" 7d#"DEGRESS":y<minus>;m<1>;y<3>;y<to minus>;m<6>;y<7>;
+
+# to * degrees
+103?1F 2M 3F 1b{"——〜~～–" 3b#"°^℃^℉":y<to>;m<2>;d<3>;
+104?1F 2M 3F 4Y 1b{"——〜~～–" 3b#"°" 4d#"C^F^K":y<to>;m<2>;d<3><4>;
+103?1Y 2M 3F 1d#"TO" 3b#"°^℃^℉":y<1>;m<2>;d<3>;
+104?1Y 2M 3F 4Y 1d#"TO" 3b#"°" 4d#"C^F^K":y<1>;m<2>;d<3><4>;
+105?1F 2M 3Y 4M 5F 1b{"-—－–" 3d#"TO" 5b#"°^℃^℉":y<minus>;m<2>;y<3>;m<4>;d<5>;
+106?1F 2M 3Y 4M 5F 6Y 1b{"-—－–" 3d#"TO" 5b#"°" 6d#"C^F^K":y<minus>;m<2>;y<3>;m<4>;d<5><6>;
+
+# to minus * degrees
+104?1F 2F 3M 4F 1b{"--——–〜~～–/／" 2b{"-—－–" 4b#"°^℃^℉":y<to minus>;m<3>;d<4>;
+105?1F 2F 3M 4F 5Y 1b{"--——–〜~～–/／" 2b{"-—－–" 4b#"°" 5d#"C^F^K":y<to minus>;m<3>;d<4><5>;
+104?1Y 2F 3M 4F 1d#"TO" 2b{"-—－–" 4b#"°^℃^℉":y<1>;y<minus>;m<3>;d<4>;
+105?1Y 2F 3M 4F 5Y 1d#"TO" 2b{"-—－–" 4b#"°" 5d#"C^F^K":y<1>;y<minus>;m<3>;d<4><5>;
+106?1F 2M 3Y 4F 5M 6F 1b{"-—－–" 4b{"-—－–" 3d#"TO" 6b#"°^℃^℉":y<minus>;m<2>;y<3>;y<minus>;m<5>;d<6>;
+107?1F 2M 3Y 4F 5M 6F 7Y 1b{"-—－–" 4b{"-—－–" 3d#"TO" 6b#"°" 7d#"C^F^K":y<minus>;m<2>;y<3>;y<minus>;m<5>;d<6><7>;
+
+# 经纬度 : 1°2’
+100?1M 2F 3M 4F 2b#"°" 4b#"'^´^′^’^＇":m<1>;y<degree>;m<3>;y<minute>;
+101?1M 2F 3M 4F 1z>1 2b#"°" 4b#"'^´^′^’^＇":m<1>;y<degrees>;m<3>;y<minute>;
+101?1M 2F 3M 4F 3z>1 2b#"°" 4b#"'^´^′^’^＇":m<1>;y<degree>;m<3>;y<minutes>;
+102?1M 2F 3M 4F 1z>1 3z>1 2b#"°" 4b#"'^´^′^’^＇":m<1>;y<degrees>;m<3>;y<minutes>;
+# 经纬度 : 2’3〞
+100?1M 2F 3M 4F 2b#"'^´^′^’^＇" 4b#"″^“^〞^〃":m<1>;y<minute>;m<3>;y<second>;
+101?1M 2F 3M 4F 1z>1 2b#"'^´^′^’^＇" 4b#"″^“^〞^〃":m<1>;y<minutes>;m<3>;y<second>;
+101?1M 2F 3M 4F 3z>1 2b#"'^´^′^’^＇" 4b#"″^“^〞^〃":m<1>;y<minute>;m<3>;y<seconds>;
+102?1M 2F 3M 4F 1z>1 3z>1 2b#"'^´^′^’^＇" 4b#"″^“^〞^〃":m<1>;y<minutes>;m<3>;y<seconds>;
+# 经纬度 : ’3〞-- 用于连接规则
+80?1F 2M 3F 1b#"'^´^′^’^＇" 3b#"″^“^〞^〃":y<minute>;m<2>;y<second>;
+81?1F 2M 3F 2z>1 1b#"'^´^′^’^＇" 3b#"″^“^〞^〃":y<minutes>;m<2>;y<seconds>;
+81?1F 2M 3F 2z>1 1b#"'^´^′^’^＇" 3b#"″^“^〞^〃":y<minute>;m<2>;y<seconds>;
+# 经纬度 : 1° W
+90?1M 2F 3Y 2b#"°" 3d#"E":m<1>;y<degree>;y<East longitude>;
+91?1M 2F 3Y 1z>1 2b#"°" 3d#"E":m<1>;y<degree>;y<East longitude>;
+90?1M 2F 3Y 2b#"°" 3d#"W":m<1>;y<degree>;y<West longitude>;
+91?1M 2F 3Y 1z>1 2b#"°" 3d#"W":m<1>;y<degree>;y<West longitude>;
+90?1M 2F 3Y 2b#"°" 3d#"N":m<1>;y<degree>;y<Northern latitude>;
+91?1M 2F 3Y 1z>1 2b#"°" 3d#"N":m<1>;y<degree>;y<Northern latitude>;
+90?1M 2F 3Y 2b#"°" 3d#"S":m<1>;y<degree>;y<South longitude>;
+91?1M 2F 3Y 1z>1 2b#"°" 3d#"S":m<1>;y<degree>;y<South longitude>;
+# 经纬度 : 1°2’ W
+110?1M 2F 3M 4F 5Y 2b#"°" 4b#"'^´^′^’^＇" 5d#"E":m<1>;y<degree>;m<3>;y<minute>;y<East longitude>;
+111?1M 2F 3M 4F 5Y 2b#"°" 1z>1 4b#"'^´^′^’^＇" 5d#"E":m<1>;y<degrees>;m<3>;y<minute>;y<East longitude>;
+111?1M 2F 3M 4F 5Y 2b#"°" 3z>1 4b#"'^´^′^’^＇" 5d#"E":m<1>;y<degree>;m<3>;y<minutes>;y<East longitude>;
+112?1M 2F 3M 4F 5Y 2b#"°" 1z>1 3z>1 4b#"'^´^′^’^＇" 5d#"E":m<1>;y<degrees>;m<3>;y<minutes>;y<East longitude>;
+110?1M 2F 3M 4F 5Y 2b#"°" 4b#"'^´^′^’^＇" 5d#"W":m<1>;y<degree>;m<3>;y<minute>;y<West longitude>;
+111?1M 2F 3M 4F 5Y 1z>1 2b#"°" 4b#"'^´^′^’^＇" 5d#"W":m<1>;y<degrees>;m<3>;y<minute>;y<West longitude>;
+111?1M 2F 3M 4F 5Y 3z>1 2b#"°" 4b#"'^´^′^’^＇" 5d#"W":m<1>;y<degree>;m<3>;y<minutes>;y<West longitude>;
+112?1M 2F 3M 4F 5Y 1z>1 3z>1 2b#"°" 4b#"'^´^′^’^＇" 5d#"W":m<1>;y<degrees>;m<3>;y<minutes>;y<West longitude>;
+110?1M 2F 3M 4F 5Y 2b#"°" 4b#"'^´^′^’^＇" 5d#"N":m<1>;y<degree>;m<3>;y<minute>;y<North latitude>;
+111?1M 2F 3M 4F 5Y 2b#"°" 1z>1 4b#"'^´^′^’^＇" 5d#"N":m<1>;y<degrees>;m<3>;y<minute>;y<North latitude>;
+111?1M 2F 3M 4F 5Y 2b#"°" 3z>1 4b#"'^´^′^’^＇" 5d#"N":m<1>;y<degree>;m<3>;y<minutes>;y<North latitude>;
+112?1M 2F 3M 4F 5Y 2b#"°" 1z>1 3z>1 4b#"'^´^′^’^＇" 5d#"N":m<1>;y<degrees>;m<3>;y<minutes>;y<North latitude>;
+110?1M 2F 3M 4F 5Y 2b#"°" 4b#"'^´^′^’^＇" 5d#"S":m<1>;y<degree>;m<3>;y<minute>;y<South longitude>;
+111?1M 2F 3M 4F 5Y 2b#"°" 1z>1 4b#"'^´^′^’^＇" 5d#"S":m<1>;y<degrees>;m<3>;y<minute>;y<South longitude>;
+111?1M 2F 3M 4F 5Y 2b#"°" 3z>1 4b#"'^´^′^’^＇" 5d#"S":m<1>;y<degree>;m<3>;y<minutes>;y<South longitude>;
+112?1M 2F 3M 4F 5Y 2b#"°" 1z>1 3z>1 4b#"'^´^′^’^＇" 5d#"S":m<1>;y<degrees>;m<3>;y<minutes>;y<South longitude>;
+# 经纬度 : 1°2’3〞W
+130?1M 2F 3M 4F 5M 6F 7Y 2b#"°" 4b#"'^´^′^’^＇" 6b#"″^“^〞^〃" 7d#"E":m<1>;y<degree>;m<3>;y<minute>;m<5>;y<second>;y<East longitude>;
+131?1M 2F 3M 4F 5M 6F 7Y 1z>1 2b#"°" 4b#"'^´^′^’^＇" 6b#"″^“^〞^〃" 7d#"E":m<1>;y<degrees>;m<3>;y<minute>;m<5>;y<second>;y<East longitude>;
+131?1M 2F 3M 4F 5M 6F 7Y 3z>1 2b#"°" 4b#"'^´^′^’^＇" 6b#"″^“^〞^〃" 7d#"E":m<1>;y<degree>;m<3>;y<minutes>;m<5>;y<second>;y<East longitude>;
+131?1M 2F 3M 4F 5M 6F 7Y 5z>1 2b#"°" 4b#"'^´^′^’^＇" 6b#"″^“^〞^〃" 7d#"E":m<1>;y<degree>;m<3>;y<minute>;m<5>;y<seconds>;y<East longitude>;
+132?1M 2F 3M 4F 5M 6F 7Y 1z>1 3z>1 2b#"°" 4b#"'^´^′^’^＇" 6b#"″^“^〞^〃" 7d#"E":m<1>;y<degrees>;m<3>;y<minutes>;m<5>;y<second>;y<East longitude>;
+132?1M 2F 3M 4F 5M 6F 7Y 1z>1 5z>1 2b#"°" 4b#"'^´^′^’^＇" 6b#"″^“^〞^〃" 7d#"E":m<1>;y<degrees>;m<3>;y<minute>;m<5>;y<seconds>;y<East longitude>;
+132?1M 2F 3M 4F 5M 6F 7Y 3z>1 5z>1 2b#"°" 4b#"'^´^′^’^＇" 6b#"″^“^〞^〃" 7d#"E":m<1>;y<degree>;m<3>;y<minutes>;m<5>;y<seconds>;y<East longitude>;
+133?1M 2F 3M 4F 5M 6F 7Y 2b#"°" 1z>1 3z>1 5z>1 4b#"'^´^′^’^＇" 6b#"″^“^〞^〃" 7d#"E":m<1>;y<degrees>;m<3>;y<minutes>;m<5>;y<seconds>;y<East longitude>;
+130?1M 2F 3M 4F 5M 6F 7Y 2b#"°" 4b#"'^´^′^’^＇" 6b#"″^“^〞^〃" 7d#"W":m<1>;y<degree>;m<3>;y<minute>;m<5>;y<second>;y<West longitude>;
+131?1M 2F 3M 4F 5M 6F 7Y 1z>1 2b#"°" 4b#"'^´^′^’^＇" 6b#"″^“^〞^〃" 7d#"W":m<1>;y<degrees>;m<3>;y<minute>;m<5>;y<second>;y<West longitude>;
+131?1M 2F 3M 4F 5M 6F 7Y 3z>1 2b#"°" 4b#"'^´^′^’^＇" 6b#"″^“^〞^〃" 7d#"W":m<1>;y<degree>;m<3>;y<minutes>;m<5>;y<second>;y<West longitude>;
+131?1M 2F 3M 4F 5M 6F 7Y 5z>1 2b#"°" 4b#"'^´^′^’^＇" 6b#"″^“^〞^〃" 7d#"W":m<1>;y<degree>;m<3>;y<minute>;m<5>;y<seconds>;y<West longitude>;
+132?1M 2F 3M 4F 5M 6F 7Y 1z>1 3z>1 2b#"°" 4b#"'^´^′^’^＇" 6b#"″^“^〞^〃" 7d#"W":m<1>;y<degrees>;m<3>;y<minutes>;m<5>;y<second>;y<West longitude>;
+132?1M 2F 3M 4F 5M 6F 7Y 1z>1 5z>1 2b#"°" 4b#"'^´^′^’^＇" 6b#"″^“^〞^〃" 7d#"W":m<1>;y<degrees>;m<3>;y<minute>;m<5>;y<seconds>;y<West longitude>;
+132?1M 2F 3M 4F 5M 6F 7Y 3z>1 5z>1 2b#"°" 4b#"'^´^′^’^＇" 6b#"″^“^〞^〃" 7d#"W":m<1>;y<degree>;m<3>;y<minutes>;m<5>;y<seconds>;y<West longitude>;
+133?1M 2F 3M 4F 5M 6F 7Y 2b#"°" 1z>1 3z>1 5z>1 4b#"'^´^′^’^＇" 6b#"″^“^〞^〃" 7d#"W":m<1>;y<degrees>;m<3>;y<minutes>;m<5>;y<seconds>;y<West longitude>;
+130?1M 2F 3M 4F 5M 6F 7Y 2b#"°" 4b#"'^´^′^’^＇" 6b#"″^“^〞^〃" 7d#"N":m<1>;y<degree>;m<3>;y<minute>;m<5>;y<second>;y<North latitude>;
+131?1M 2F 3M 4F 5M 6F 7Y 1z>1 2b#"°" 4b#"'^´^′^’^＇" 6b#"″^“^〞^〃" 7d#"N":m<1>;y<degrees>;m<3>;y<minute>;m<5>;y<second>;y<North latitude>;
+131?1M 2F 3M 4F 5M 6F 7Y 3z>1 2b#"°" 4b#"'^´^′^’^＇" 6b#"″^“^〞^〃" 7d#"N":m<1>;y<degree>;m<3>;y<minutes>;m<5>;y<second>;y<North latitude>;
+131?1M 2F 3M 4F 5M 6F 7Y 5z>1 2b#"°" 4b#"'^´^′^’^＇" 6b#"″^“^〞^〃" 7d#"N":m<1>;y<degree>;m<3>;y<minute>;m<5>;y<seconds>;y<North latitude>;
+132?1M 2F 3M 4F 5M 6F 7Y 1z>1 3z>1 2b#"°" 4b#"'^´^′^’^＇" 6b#"″^“^〞^〃" 7d#"N":m<1>;y<degrees>;m<3>;y<minutes>;m<5>;y<second>;y<North latitude>;
+132?1M 2F 3M 4F 5M 6F 7Y 1z>1 5z>1 2b#"°" 4b#"'^´^′^’^＇" 6b#"″^“^〞^〃" 7d#"N":m<1>;y<degrees>;m<3>;y<minute>;m<5>;y<seconds>;y<North latitude>;
+132?1M 2F 3M 4F 5M 6F 7Y 3z>1 5z>1 2b#"°" 4b#"'^´^′^’^＇" 6b#"″^“^〞^〃" 7d#"N":m<1>;y<degree>;m<3>;y<minutes>;m<5>;y<seconds>;y<North latitude>;
+133?1M 2F 3M 4F 5M 6F 7Y 2b#"°" 1z>1 3z>1 5z>1 4b#"'^´^′^’^＇" 6b#"″^“^〞^〃" 7d#"N":m<1>;y<degrees>;m<3>;y<minutes>;m<5>;y<seconds>;y<North latitude>;
+130?1M 2F 3M 4F 5M 6F 7Y 2b#"°" 4b#"'^´^′^’^＇" 6b#"″^“^〞^〃" 7d#"S":m<1>;y<degree>;m<3>;y<minute>;m<5>;y<second>;y<South latitude>;
+131?1M 2F 3M 4F 5M 6F 7Y 1z>1 2b#"°" 4b#"'^´^′^’^＇" 6b#"″^“^〞^〃" 7d#"S":m<1>;y<degrees>;m<3>;y<minute>;m<5>;y<second>;y<South latitude>;
+131?1M 2F 3M 4F 5M 6F 7Y 3z>1 2b#"°" 4b#"'^´^′^’^＇" 6b#"″^“^〞^〃" 7d#"S":m<1>;y<degree>;m<3>;y<minutes>;m<5>;y<second>;y<South latitude>;
+131?1M 2F 3M 4F 5M 6F 7Y 5z>1 2b#"°" 4b#"'^´^′^’^＇" 6b#"″^“^〞^〃" 7d#"S":m<1>;y<degree>;m<3>;y<minute>;m<5>;y<seconds>;y<South latitude>;
+132?1M 2F 3M 4F 5M 6F 7Y 1z>1 3z>1 2b#"°" 4b#"'^´^′^’^＇" 6b#"″^“^〞^〃" 7d#"S":m<1>;y<degrees>;m<3>;y<minutes>;m<5>;y<second>;y<South latitude>;
+132?1M 2F 3M 4F 5M 6F 7Y 1z>1 5z>1 2b#"°" 4b#"'^´^′^’^＇" 6b#"″^“^〞^〃" 7d#"S":m<1>;y<degrees>;m<3>;y<minute>;m<5>;y<seconds>;y<South latitude>;
+132?1M 2F 3M 4F 5M 6F 7Y 3z>1 5z>1 2b#"°" 4b#"'^´^′^’^＇" 6b#"″^“^〞^〃" 7d#"S":m<1>;y<degree>;m<3>;y<minutes>;m<5>;y<seconds>;y<South latitude>;
+133?1M 2F 3M 4F 5M 6F 7Y 2b#"°" 1z>1 3z>1 5z>1 4b#"'^´^′^’^＇" 6b#"″^“^〞^〃" 7d#"S":m<1>;y<degrees>;m<3>;y<minutes>;m<5>;y<seconds>;y<South latitude>;
+
+
+###############################################################################
+# 数值金额
+###############################################################################
+${CR1} = HKD^MOP^CNY^KPW^VND^JPY^LAK^KHR^PHP^MYR^SGD^THP^BUK^LKR^MVR^IDR^PRK^INR^NPR^AFA^IRR^IQD^SYP^LBP^JOD^SAR^KWD^BHD^QAR^OMR^YER^YDD^TRL^CYP^EUR^ISK^DKK^NOK^SEK^FIM^SUR^PLZ^CSK^HUF^DEM^ATS^CHF^NLG^BEF^LUF^GBP^IEP^FRF^ESP^PTE^ITL^MTP^YUD^ROL^BGL^ALL^GRD^CAD^USD^MXP^GTQ^SVC^HNL^NIC^CRC^PAB^CUP^BSD^JMD^HTG^DOP^TTD^BBD^COP^VEB^GYD^SRG^PES^ECS^BRC^BOP^CLP^ARP^PYG^UYP^EGP^LYD^SDP^TND^DZD^MAD^MRO^XOF^GMD^GWP^GNS^SLL^LRD^GHC^NGN^XAF^GQE^ZAR^DJF^SOS^KES^UGS^TZS^RWF^BIF^ZRZ^ZMK^MCF^SCR^MUR^ZWD^KMF^AUD^NZD^FJD^SBD^
+${CR2} = CFAF^
+${CR3} = ៛﷼￥€$＄﹩£￡₤฿₵￠₡₫ƒ₭₥₦₱〒₮₩₴₪₯
+
+20?1F 2F 1b#"৲" 2b#"৳":d<1><2>;
+20?1Y 2F 1b#"R" 2b#"$":d<1><2>;
+20?1Y 2F 1b#"z" 2b#"ł":d<1><2>;
+30?1F 2F 3F 1b#"Δ" 2b#"ρ" 3b#"χ^.":d<1><2>;
+
+41?1F 2M 1b{"${CR3}":m<2>;d<1>;
+41?1F 2F 3M 1b#"৲" 2b#"৳":m<3>;d<1><2>;
+41?1Y 2F 3M 1b#"R" 2b#"$":m<3>;d<1><2>;
+41?1Y 2F 3M 1b#"z" 2b#"ł":m<3>;d<1><2>;
+
+41?1Y 1c=3 1b{"${CR1}":d<1>;
+41?1Y 1c=4 1b#"${CR2}":d<1>;
+
+# RMB￥
+41?1Y 2F 3M 1c=3 1d#"RMB^JPY" 2b#"￥":m<3>;d<1><2>;
+
+# 1CNY
+51?1M 2Y 2c=3 2b{"${CR1}":m<1>;d<2>;
+51?1M 2Y 2c=4 2b#"${CR2}":m<1>;d<2>;
+61?1F 2M 3Y 1b#"-" 3c=3 3b{"${CR1}":y<negative>;m<2>;d<3>;
+61?1F 2M 3Y 1b#"-" 3c=4 3b#"${CR2}":y<negative>;m<2>;d<3>;
+
+# 1～2CNY
+84?1M 2F 3M 4Y 2b{"--——–〜~～–/／" 4c=3 4b{"${CR1}":m<1>;y<to>;m<3>;d<4>;
+84?1M 2F 3M 4Y 2b{"--——–〜~～–/／" 4c=4 4b#"${CR2}":m<1>;y<to>;m<3>;d<4>;
+
+# 1CNY～2CNY
+85?1M 2Y 3F 4M 5Y 3b{"--——–〜~～–/／" 2c=3 5c=3 2b{"${CR1}" 5b{"${CR1}":m<1>;d<2>;y<to>;m<4>;d<5>;
+85?1M 2Y 3F 4M 5Y 3b{"--——–〜~～–/／" 2c=4 5c=4 2b#"${CR2}" 5b#"${CR2}":m<1>;d<2>;y<to>;m<4>;d<5>;
+85?1F 2M 3Y 1b{"——〜~～" 3c=3 3b{"${CR1}":y<to>;m<2>;d<3>;
+86?1F 2F 3M 4Y 1b{"——〜~～–" 2b#"-" 4c=3 4b{"${CR1}":y<to negative>;m<3>;d<4>;
+85?1F 2M 3Y 1b{"--——–〜~～–/／" 3c=4 3b#"${CR2}":y<to>;m<2>;d<3>;
+86?1F 2F 3M 4Y 1b{"——〜~～–" 2b#"-" 4c=4 4b#"${CR2}":y<to negative>;m<3>;d<4>;
+
+# ￥100～200
+64?1F 2M 3F 4M 3b{"--——–〜~～–/／" 1b{"${CR3}":m<2>;y<to>;m<4>;d<1>;
+64?1F 2M 3F 4F 5M 3b{"--——–〜~～–/／" 1b{"${CR3}" 4b{"${CR3}":m<2>;d<1>;y<to>;m<5>;d<4>;
+
+# $123,213,566.2342
+210?1F 2S 3F 4S 4c=3 3b{"，," 2c<4 1b{"${CR3}":m<2><4>;d<1>;
+211?1F 2S 3F 4S 5F 6S 2c<4 4c=3 6c=3 3b{"，," 5b{"，," 1b{"${CR3}":m<2><4><6>;d<1>;
+212?1F 2S 3F 4S 5F 6S 7F 8S 2c<4 4c=3 6c=3 8c=3 3b{"，," 5b{"，," 7b{"，," 1b{"${CR3}":m<2><4><6><8>;d<1>;
+213?1F 2S 3F 4M 3b{"，," 2c<4 1b{"${CR3}":m<2><4>;d<1>;
+214?1F 2S 3F 4S 5F 6M 2c<4 4c=3 3b{"，," 5b{"，," 1b{"${CR3}":m<2><4><6>;d<1>;
+215?1F 2S 3F 4S 5F 6S 7F 8M 2c<4 4c=3 6c=3 3b{"，," 5b{"，," 7b{"，," 1b{"${CR3}":m<2><4><6><8>;d<1>;
+
+# $12.3M
+114?1F 2M 3Y 1b#"$" 3b#"K":m<2>;y<thousand dollars>;
+114?1F 2M 3Y 1b#"$" 3b#"M":m<2>;y<million dollars>;
+114?1F 2M 3Y 1b#"$" 3b#"B":m<2>;y<billion dollars>;
+
+# $12.3 million
+114?1F 2M 3Y 1b#"$" 3d#"THOUSAND":m<2>;y<thousand dollars>;
+114?1F 2M 3Y 1b#"$" 3d#"MILLION":m<2>;y<million dollars>;
+114?1F 2M 3Y 1b#"$" 3d#"BILLION":m<2>;y<billion dollars>;
+
+# US$12.3
+120?1Y 2F 3M 1b#"US^A^C^HK^SG^LR^ZW^NZ^FJ^SB" 2b{"$＄﹩":m<3>;d<1><$>;
+120?1Y 2F 3M 1b#"US^A^C^HK^SG^LR^ZW^NZ^FJ^SB" 2b{"$＄﹩":m<3>;d<1><$>;
+120?1Y 2F 3M 1b#"US^A^C^HK^SG^LR^ZW^NZ^FJ^SB" 2b{"$＄﹩":m<3>;d<1><$>;
+
+# US$12.3M
+220?1Y 2F 3M 4Y 1b#"US^A^C^HK^SG^LR^ZW^NZ^FJ^SB" 4b#"K" 2b{"$＄﹩":m<3>;y<thousand>;d<1><$>;
+220?1Y 2F 3M 4Y 1b#"US^A^C^HK^SG^LR^ZW^NZ^FJ^SB" 4b#"M" 2b{"$＄﹩":m<3>;y<million>;d<1><$>;
+220?1Y 2F 3M 4Y 1b#"US^A^C^HK^SG^LR^ZW^NZ^FJ^SB" 4b#"B" 2b{"$＄﹩":m<3>;y<billion>;d<1><$>;
+
+# # US$12.3 million
+220?1Y 2F 3M 4Y 1b#"US^A^C^HK^SG^LR^ZW^NZ^FJ^SB" 4d#"THOUSAND" 2b{"$＄﹩":m<3>;y<4>;d<1><$>;
+220?1Y 2F 3M 4Y 1b#"US^A^C^HK^SG^LR^ZW^NZ^FJ^SB" 4d#"MILLION" 2b{"$＄﹩":m<3>;y<4>;d<1><$>;
+220?1Y 2F 3M 4Y 1b#"US^A^C^HK^SG^LR^ZW^NZ^FJ^SB" 4d#"BILLION" 2b{"$＄﹩":m<3>;y<4>;d<1><$>;
+
+
+###############################################################################
+# 特殊字母/符号(单位)
+###############################################################################
+
+${dw1} = Bq^Ci^dB^den^denier^dyn^deg^dr^erg^ft^fermi^g^dg^dag^hg^mg^kgf^KB^MB^GB^TB^Gy^Gs^gr^ha^in^J^kn^dL^dl^cL^cl^mL^ml^cc^lx^lb^lm^m^dm^dam^hm^dmm^cmm^nm^fm^mi^mile^mol^mmol^nmol^pmol^Oe^oz^bar^mbar^Torr^atm^cmHg^ph^rd^rad^rem^Sv^sb^tex^UKgal^UKqt^UKpt^UKgi^UKfloz^UKfldr^UKton^USton^V^eV^W^kW^KW^mW^Wb^yd^
+${dw2} = CAL^KCAL^MC^KC^KG^KGS^HZ^KHZ^MHZ^GHZ^THZ^PHZ^EHZ^KJ^L^CM^MM^KM^PA^KPA^MPA^GPA^
+${dwt} = y^yr^H^Hr^h^hr^min^Min^MIN^s^Sec^sec^
+${dws} = Å^㎡^㏕^㎜^㎝^㎞^㏎^㎎^㎏^㏄^Ω^π^
+
+# 字母单位
+84?1M 2Y 3F 4Y 2b#"A^C^R" 3b#"/^／" 4d#"M^KG^MIN^S":m<1>;d<2>;y<per>;d<4>;
+
+84?1M 2Y 3F 4F 2b#"cd" 3b#"/^／" 4b#"㎡":m<1>;d<2>;y<per>;d<4>;
+85?1M 2Y 3F 4Y 5F 2b#"cd" 3b#"/^／" 4b#"m" 5b#"²^³":m<1>;d<2>;y<per>;d<4><5>;
+85?1M 2Y 3F 4Y 5S 2b#"cd" 3b#"/^／" 4b#"m" 5z>1 5z<4 5c=1:m<1>;d<2>;y<per>;d<4><5>;
+
+53?1M 2Y 2b#"Kb":m<1>;y<kilo bit>;
+53?1M 2Y 2b#"Mb":m<1>;y<mega bit>;
+53?1M 2Y 3F 2b#"h" 3b#"㎡":m<1>;d<2><3>;
+83?1M 2Y 3F 2b#"d^c^k" 3b#"㎡":m<1>;d<2><3>;
+
+83?1M 2Y 3S 2b#"hm" 3z=2 3c=1:m<1>;d<2><3>;
+83?1M 2Y 3F 2b#"hm" 3b#"²":m<1>;d<2><3>;
+84?1M 2Y 3F 4Y 2b#"m" 3b#"μ" 4b#"m":m<1>;d<2><3><4>;
+84?1M 2Y 3F 4Y 2b#"kW^KW" 3b#"·" 4b#"h":m<1>;d<2><3><4>;
+
+52?1M 2Y 2b#"${dw1}^${dwt}":m<1>;d<2>;
+52?1M 2Y 2d#"${dw2}":m<1>;d<2>;
+53?1M 2F 3Y 2b#"μ" 3d#"G^M^MOL":m<1>;d<2><3>;
+83?1M 2Y 3F 2b#"ft^in^mile^yd" 3b#"²^³":m<1>;d<2><3>;
+83?1M 2Y 3F 2d#"M^DM^CM^KM" 3b#"²^³":m<1>;d<2><3>;
+83?1M 2Y 3S 2d#"M^DM^CM^KM" 3z>1 3z<4 3c=1:m<1>;d<2><3>;
+
+# 符号单位
+50?1M 2F 2b#"${dws}":m<1>;d<2>;
+50?1M 2F 2b#"'^´^’^＇":m<1>;y<minute>;
+50?1M 2F 1z>1 2b#"'^´^’^＇":m<1>;y<minutes>;
+50?1M 2F 2b#"″^“^〞^〃":m<1>;y<second>;
+50?1M 2F 1z>1 2b#"″^“^〞^〃":m<1>;y<seconds>;
+
+# 其他特殊字母
+90?1Y 2S 1d#"D^G^K^L^T" 2c>3:y<1>;s<2>;
+90?1Y 2S 1d#"D^G^K^L^T" 2c<4:y<1>;m<2>;
+51?1Y 2M 1d#"PM":y<1>;m<2>;
+
+# / per
+22?1F 2Y 1b#"/^／" 2b#"Kb":y<per kilo bit>;
+22?1F 2Y 1b#"/^／" 2b#"Mb":y<per mega bit>;
+23?1F 2Y 3F 1b#"/^／" 2b#"h" 3b#"㎡":y<per>;d<2><3>;
+23?1F 2Y 3F 1b#"/^／" 2b#"d^c^k" 3b#"㎡":y<per>;d<2><3>;
+
+23?1F 2Y 3S 1b#"/^／" 2b#"hm" 3z=2 3c=1:y<per>;d<2><3>;
+23?1F 2Y 3F 1b#"/^／" 2b#"hm" 3b#"²":y<per>;d<2><3>;
+24?1F 2Y 3F 4Y 1b#"/^／" 2b#"m" 3b#"μ" 4b#"m":y<per>;d<2><3><4>;
+24?1F 2Y 3F 4Y 1b#"/^／" 2b#"kW^KW" 3b#"·" 4b#"h":y<per>;d<2><3><4>;
+
+22?1F 2Y 1b#"/^／" 2b#"A^${dw1}^${dwt}":y<per>;d<2>;
+22?1F 2Y 1b#"/^／" 2d#"${dw2}":y<per>;d<2>;
+23?1F 2F 3Y 1b#"/^／" 2b#"μ" 3d#"G^M^MOL":y<per>;d<2><3>;
+23?1F 2Y 3F 1b#"/^／" 2b#"ft^in^mile^yd" 3b#"²^³":y<per>;d<2><3>;
+23?1F 2Y 3F 1b#"/^／" 2d#"M^DM^CM^KM" 3b#"²^³":y<per>;d<2><3>;
+23?1F 2Y 3S 1b#"/^／" 2d#"M^DM^CM^KM" 3z>1 3z<4 3c=1:y<per>;d<2><3>;
+
+
+22?1F 2F 1b#"/^／" 2b#"${dws}":y<per>;d<2>;
+
+# m～mDW
+84?1M 2F 3M 4Y 2b{"--——–〜~～–/／" 4b#"Kb":m<1>;y<to>;m<3>;t<兆>;
+84?1M 2F 3M 4Y 2b{"--——–〜~～–/／" 4b#"Mb":m<1>;y<to>;m<3>;t<纪>;
+85?1M 2F 3M 4Y 5F 2b{"--——–〜~～–/／" 4b#"h" 5b#"㎡":m<1>;y<to>;m<3>;d<4><5>;
+85?1M 2F 3M 4Y 5F 2b{"--——–〜~～–/／" 4b#"d^c^k" 5b#"㎡":m<1>;y<to>;m<3>;d<4><5>;
+
+85?1M 2F 3M 4Y 5S 2b{"--——–〜~～–/／" 4b#"hm" 5z=2 5c=1:m<1>;y<to>;m<3>;d<4><5>;
+85?1M 2F 3M 4Y 5F 2b{"--——–〜~～–/／" 4b#"hm" 5b#"²":m<1>;y<to>;m<3>;d<4><5>;
+86?1M 2F 3M 4Y 5F 6Y 2b{"--——–〜~～–/／" 4b#"m" 5b#"μ" 6b#"m":m<1>;y<to>;m<3>;d<4><5><6>;
+86?1M 2F 3M 4Y 5F 6Y 2b{"--——–〜~～–/／" 4b#"kW^KW" 5b#"·" 6b#"h":m<1>;y<to>;m<3>;d<4><5><6>;
+
+84?1M 2F 3M 4Y 2b{"--——–〜~～–/／" 4b#"A^${dw1}^${dwt}":m<1>;y<to>;m<3>;d<4>;
+85?1M 2F 3M 4Y 2b{"--——–〜~～–/／" 4d#"${dw2}":m<1>;y<to>;m<3>;d<4>;
+85?1M 2F 3M 4F 5Y 2b{"--——–〜~～–/／" 4b#"μ" 5d#"M^MOL":m<1>;y<to>;m<3>;d<4><5>;
+85?1M 2F 3M 4Y 5F 2b{"--——–〜~～–/／" 4b#"ft^in^mile^yd" 5b#"²^³":m<1>;y<to>;m<3>;d<4><5>;
+85?1M 2F 3M 4Y 5F 2b{"--——–〜~～–/／" 4d#"M^DM^CM^KM" 5b#"²^³":m<1>;y<to>;m<3>;d<4><5>;
+85?1M 2F 3M 4Y 5S 2b{"--——–〜~～–/／" 4d#"M^DM^CM^KM" 5z>1 5z<4 5c=1:m<1>;y<to>;m<3>;d<4><5>;
+
+
+84?1M 2F 3M 4F 2b{"——〜~～–/／" 4b#"${dws}":m<1>;y<to>;m<3>;d<4>;
+
+# mDW~mDW
+85?1M 2Y 3F 4M 5Y 3b{"--——–〜~～–/／" 2b#"Kb" 5b#"Kb":m<1>;y<to>;m<3>;y<kilo bit>;
+85?1M 2F 3F 4M 5Y 3b{"--——–〜~～–/／" 2b#"Mb" 5b#"Mb":m<1>;y<to>;m<3>;y<mega bit>;
+84?1F 2M 3Y 4F 1b{"--——–〜~～–/／" 3b#"h" 4b#"㎡":y<to>;m<2>;d<3><4>;
+84?1F 2M 3Y 4F 1b{"--——–〜~～–/／" 3b#"d^c^k" 4b#"㎡":y<to>;m<2>;d<3><4>;
+
+84?1F 2M 3Y 4S 1b{"--——–〜~～–/／" 3b#"hm" 4z=2 4c=1:y<to>;m<2>;d<3><4>;
+84?1F 2M 3Y 4F 1b{"--——–〜~～–/／" 3b#"hm" 3b#"²":y<to>;m<2>;d<3><4>;
+85?1F 2M 3Y 4F 5Y 1b{"--——–〜~～–/／" 3b#"m" 4b#"μ" 5b#"m":y<to>;m<2>;d<3><4><5>;
+85?1F 2M 3Y 4F 5Y 1b{"--——–〜~～–/／" 3b#"kW^KW" 4b#"·" 5b#"h":y<to>;m<2>;d<3><4><5>;
+
+85?1M 2Y 3F 4M 5Y 3b{"--——–〜~～–/／" 2b#"A^${dw1}^${dwt}" 5b#"A^${dw1}^${dwt}":m<1>;d<2>;y<to>;m<4>;d<5>;
+85?1M 2Y 3F 4M 5Y 3b{"--——–〜~～–/／" 2d#"${dw2}" 5d#"${dw2}":m<1>;d<2>;y<to>;m<4>;d<5>;
+84?1F 2M 3F 4Y 1b{"--——–〜~～–/／" 3b#"μ" 4d#"M^MOL":y<to>;m<2>;d<3><4>;
+84?1F 2M 3Y 4F 1b{"--——–〜~～–/／" 3b#"ft^in^mile^yd" 4b#"²^³":y<to>;m<2>;d<3><4>;
+84?1F 2M 3Y 4F 1b{"--——–〜~～–/／" 3d#"M^DM^CM^KM" 4b#"²^³":y<to>;m<2>;d<3><4>;
+84?1F 2M 3Y 4S 1b{"--——–〜~～–/／" 3d#"M^DM^CM^KM" 4z>1 4z<4 4c=1:y<to>;m<2>;d<3><4>;
+
+
+85?1M 2F 3F 4M 5F 3b{"--——–〜~～–/／" 2b#"${dws}" 5b#"${dws}":m<1>;d<2>;y<to>;m<4>;d<5>;
+
+###############################################################################
+# 常用单位
+###############################################################################
+# 量词表
+${qs1} = SHARE^PENNY^DAY^WEEK^BAHT^CEDI^CENT^COLON^CORDOBA^COULOMB^CUBIC^DEGREE^DENIER^DINAR^DOLLAR^DONG^DRACHMA^DRAM^DYNE^ERG^ESCUDO^EURO^FLORIN^FOOT^FORINT^FRANC^GALLON^GAUSS^GILL^GOURDE^GRAIN^GRAM^GRAY^GUILDER^HECTARE^HERTZ^HOUR^INCH^KILO^KIP^KNOB^KRONA^KYAT^LEI^LEK^LENZ^LEONE^LEV^LIBRA^LIRA^LITER^LUMEN^LUX^MARKKA^METER^MILE^MINUTE^MOLE^NAIRA^OUGUIYA^OUNCE^PASCAL^PATACA^PESETA^PESO^PICOMOLE^PINT^POUND^QUART^QUETZAL^RAD^^RIYAL^RUBLE^RUPEE^RUPIAH^SECOND^SHEKEL^SHILLING^SOL^SQUARE^SYLI^TEX^TON^TORR^TUGRIK^VOLT^WATT^WEBER^WEN^WON^YARD^YEAR^YEN^YUAN^ZLOTY^
+${qp1} = SHARES^PENCE^WEEKS^WORDS^BAHTS^CEDIS^CENTS^COLONS^CUBIC^DEGREES^DINARS^DOLLARS^DRACHMAS^DRAMS^ERGS^ESCUDOS^EUROS^FEET^FRANCS^GALLONS^GILLS^GOURDES^GRAINS^GRAMS^GRAYS^HECTARES^HERTZES^HOURS^INCHES^JONGOLS^JOULES^KNOBS^KRONOR^KYATS^LEIS^LEKS^LEMPIRAS^LEVS^LIBRAE^LIRAS^LITERS^LUMENS^LUXUS^MARKKAS^MARKS^METERS^MILES^MINUTES^MOLES^NAIRAS^OUNCES^PASCALS^PATACAS^PESETAS^PESOS^PICOMOLES^PINTS^POUNDS^QUARTS^QUETZALS^RADS^RANDS^REALS^RIYALS^RUBLES^RUPEES^SECONDS^SHEKELS^SHILLINGS^SOLS^SQUARE^SYLIS^TONS^VOLTS^WATTS^YARDS^YEARS^ZLOTE^GAUSS^
+${qt1} = POINTS^HUNDRED^THOUSAND^MILLION^BILLION^TRILLION^QUADRILLION^QUINTILLION^SEXTILLION^SEPTILLION^OCTILLION^NONILLION^DECADES
+
+
+51?1M 2Y 2d#"${qs1}":m<1>;y<2>;
+51?1M 2Y 2d#"${qp1}":m<1>;y<2>;
+51?1M 2Y 2d#"${qt1}":m<1>;y<2>;
+51?1M 2Y 2h#4"DECI^DECA^MEGA^NANO^KILO^GIGA^PETA^DEKA" 2t}6"GRAM^BEL^LITER^METER^HERTZ^BYTE^MOLE^ASCAL^WATT^MILE^JOULE^":m<1>;y<2>;
+51?1M 2Y 2h#5"CENTI^MILLI^MICRO^HECTO^ZETTA^YOTTA^TRILL" 2t}6"GRAM^BEL^LITER^METER^HERTZ^BYTE^MOLE^ASCAL^WATT^MILE^JOULE^":m<1>;y<2>;
+
+61?1F 2M 3Y 1b#"-" 3d#"${qs1}":y<negative>;m<2>;y<3>;
+61?1F 2M 3Y 1b#"-" 3d#"${qp1}":y<negative>;m<2>;y<3>;
+61?1F 2M 3Y 1b#"-" 3d#"${qt1}":y<negative>;m<2>;y<3>;
+61?1F 2M 3Y 1b#"-" 3h#4"DECI^DECA^MEGA^NANO^KILO^GIGA^PETA^DEKA" 3t}6"GRAM^BEL^LITER^METER^HERTZ^BYTE^MOLE^ASCAL^WATT^MILE^JOULE^":y<negative>;m<2>;y<3>;
+61?1F 2M 3Y 1b#"-" 3h#5"CENTI^MILLI^MICRO^HECTO^ZETTA^YOTTA^TRILL" 3t}6"GRAM^BEL^LITER^METER^HERTZ^BYTE^MOLE^ASCAL^WATT^MILE^JOULE^":y<negative>;m<2>;y<3>;
+
+# 90-cent
+81?1S 2F 3Y 2b#"-" 3d#"${qs1}":m<1>;y<3>;
+81?1S 2F 3Y 2b#"-" 3h#4"DECI^DECA^MEGA^NANO^KILO^GIGA^PETA^DEKA" 3t}6"GRAM^BEL^LITER^METER^HERTZ^BYTE^MOLE^ASCAL^WATT^MILE^JOULE^":m<1>;y<3>;
+81?1S 2F 3Y 2b#"-" 3h#5"CENTI^MILLI^MICRO^HECTO^ZETTA^YOTTA^TRILL" 3t}6"GRAM^BEL^LITER^METER^HERTZ^BYTE^MOLE^ASCAL^WATT^MILE^JOULE^":m<1>;y<3>;
+
+
+91?1M 2F 3M 4Y 2b{"--——–〜~～–" 4d#"${qs1}":m<1>;y<to>;m<3>;y<4>;
+91?1M 2F 3M 4Y 2b{"--——–〜~～–" 4d#"${qp1}":m<1>;y<to>;m<3>;y<4>;
+91?1M 2F 3M 4Y 2b{"--——–〜~～–" 4d#"${qt1}":m<1>;y<to>;m<3>;y<4>;
+91?1M 2F 3M 4Y 2b{"--——–〜~～–" 4h#4"DECI^DECA^MEGA^NANO^KILO^GIGA^PETA^DEKA" 4t}6"GRAM^BEL^LITER^METER^HERTZ^BYTE^MOLE^ASCAL^WATT^MILE^JOULE^":m<1>;y<to>;m<3>;y<4>;
+91?1M 2F 3M 4Y 2b{"--——–〜~～–" 4h#5"CENTI^MILLI^MICRO^HECTO^ZETTA^YOTTA^TRILL" 4t}6"GRAM^BEL^LITER^METER^HERTZ^BYTE^MOLE^ASCAL^WATT^MILE^JOULE^":m<1>;y<to>;m<3>;y<4>;
+
+
+95?1M 2F 3Y 2b#"/^／" 3d#"${qs1}":m<1>;y<per>;y<3>;
+95?1M 2F 3Y 2b#"/^／" 3h#4"DECI^DECA^MEGA^NANO^KILO^GIGA^PETA^DEKA" 3t}6"GRAM^BEL^LITER^METER^HERTZ^BYTE^MOLE^ASCAL^WATT^MILE^JOULE^":m<1>;y<per>;y<3>;
+95?1M 2F 3Y 2b#"/^／" 3h#5"CENTI^MILLI^MICRO^HECTO^ZETTA^YOTTA^TRILL" 3t}6"GRAM^BEL^LITER^METER^HERTZ^BYTE^MOLE^ASCAL^WATT^MILE^JOULE^":m<1>;y<per>;y<3>;
+
+
+100?1M 2Y 3F 4Y 3b#"/^／" 2c<5 2d#"${qp1}" 4d#"${qs1}":m<1>;y<2>;y<per>;y<4>;
+100?1M 2Y 3F 4Y 3b#"/^／" 2c<5 2d#"${qp1}" 4h#4"DECI^DECA^MEGA^NANO^KILO^GIGA^PETA^DEKA" 4t}6"GRAM^BEL^LITER^METER^HERTZ^BYTE^MOLE^ASCAL^WATT^MILE^JOULE^":m<1>;y<2>;y<per>;y<4>;
+100?1M 2Y 3F 4Y 3b#"/^／" 2c<5 2d#"${qp1}" 4h#5"CENTI^MILLI^MICRO^HECTO^ZETTA^YOTTA^TRILL" 4t}6"GRAM^BEL^LITER^METER^HERTZ^BYTE^MOLE^ASCAL^WATT^MILE^JOULE^":m<1>;y<2>;y<per>;y<4>;
+
+
+###############################################################################
+# 默认数值及数值范围
+###############################################################################
+
+# 十百千万亿
+10?1S 1c=2 1t#1"0":m<1>;
+10?1S 1c=3 1t#2"00":m<1>;
+10?1S 1c=4 1t#3"000":m<1>;
+10?1S 1c=5 1t#4"0000":m<1>;
+10?1S 1c=6 1t#5"00000":m<1>;
+10?1S 1c=7 1t#6"000000":m<1>;
+30?1S 1c=8 1t#7"0000000":m<1>;
+30?1S 1c=9 1t#8"00000000":m<1>;
+50?1S 1c=10 1t#9"000000000":m<1>;
+50?1S 1c=11 1t#10"0000000000":m<1>;
+50?1S 1c=12 1t#11"00000000000":m<1>;
+50?1S 1c=13 1t#12"000000000000":m<1>;
+
+# ～：非常重要，所以单拿出来
+83?1M 2F 3M 2b{"--——–〜~～–":m<1>;y<to>;m<3>;
+84?1F 2M 3F 4M 1b{"-－–" 3b{"——〜~～–":y<negative>;m<2>;y<to>;m<4>;
+84?1M 2F 3F 4M 3b{"-－–" 2b{"——〜~～–":m<1>;y<to>;m<4>;
+94?1F 2M 3F 4F 5M 1b{"-－–" 4b{"-－–" 3b{"——〜~～–":y<negative>;m<2>;y<to negative>;m<5>;
+
+83?1M 2Y 3M 2d{"TO":m<1>;y<2>;m<3>;
+84?1F 2M 3Y 4M 1b{"-－–" 3d{"TO":y<negative>;m<2>;y<3>;m<4>;
+84?1M 2Y 3F 4M 3b{"-－–" 2d{"TO":m<1>;y<2>;m<4>;
+94?1F 2M 3Y 4F 5M 1b{"-－–" 4b{"-－–" 3d{"TO":y<negative>;m<2>;y<3>;y<negative>;m<5>;
+
+
+###############################################################################
+# 比分/分数/百分数/科学计数法
+###############################################################################
+
+# 1:2
+61?1M 2F 3M 1c<4 2b{"-——-–" 3c<4:m<1>;y<to>;m<3>;
+62?1M 2F 3M 1c<4 2b{"-——-–" 3z=0:m<1>;y<to>;y<nil>;
+62?1M 2F 3M 1z=0 2b{"-——-–" 3c<4:y<nil>;y<to>;m<3>;
+63?1M 2F 3M 1z=0 2b{"-——-–" 3z=0:y<nil>;y<to>;y<nil>;
+
+# 分数
+100?1S 2F 3S 2b{"/／":e<1><2><3>;
+110?1F 2S 3F 4S 1b{"-－–" 3b{"/／":y<minus>;e<2><3><4>;
+120?1S 2S 3F 4S 3b{"/／":m<1>;y<and>;e<2><3><4>;
+130?1F 2S 3S 4F 5S 1b{"-－–" 4b{"/／":y<minus>;m<2>;y<and>;e<3><4><5>;
+
+# m%
+40?1M 2F 2b{"%％﹪‰‱":m<1>;d<2>;
+50?1F 2M 3F 1b{"-－–" 3b{"%％﹪‰‱":y<negative>;m<2>;d<3>;
+
+# m~m%
+104?1M 2F 3M 4F 2b{"--——–〜~～–/／" 4b{"%％﹪‰‱":m<1>;y<to>;m<3>;d<4>;
+105?1F 2M 3F 4M 5F 1b{"-－" 3b{"--——–〜~～–/／" 5b{"%％﹪‰‱":y<negative>;m<2>;y<to>;m<4>;d<5>;
+105?1M 2F 3F 4M 5F 2b{"--——–〜~～–/／" 3b{"-－–" 5b{"%％﹪‰‱":m<1>;y<to negative>;m<4>;d<5>;
+106?1F 2M 3F 4F 5M 6F 1b{"-－–" 3b{"--——–〜~～–/／" 4b{"-－"6b{"%％﹪‰‱":y<negative>;m<2>;y<to negative>;m<5>;d<6>;
+155?1M 2F 3F 4M 5F 2b{"%％﹪‰‱" 3b{"--——–〜~～–/／" 5b{"%％﹪‰‱":m<1>;y<to>;m<4>;d<5>;
+156?1F 2M 3F 4F 5M 6F 1b{"-－–" 3b{"%％﹪‰‱" 4b{"--——–〜~～–/／" 6b{"%％﹪‰‱":y<negative>;m<2>;y<to>;m<5>;d<6>;
+156?1M 2F 3F 4F 5M 6F 2b{"%％﹪‰‱" 3b{"--——–〜~～–/／" 4b{"-－–" 6b{"%％﹪‰‱":m<2>;y<to negative>;m<5>;d<6>;
+157?1F 2M 3F 4F 5F 6M 7F 1b{"-－–" 3b{"%％﹪‰‱" 4b{"--——–〜~～–/／" 5b{"-－–" 7b{"%％﹪‰‱":m<2>;y<to negative>;m<6>;d<6>;
+
+# 12,345,678.90
+61?1S 2F 3M 2b{"，," 1c<4 3c>2 3z<1000:m<1><3>;
+62?1S 2F 3S 4F 5M 2b{"，," 4b{"，," 1c<4 3c=3 5c>2 5z<1000:m<1><3><5>;
+63?1S 2F 3S 4F 5S 6F 7M 2b{"，," 4b{"，," 6b{"，," 1c<4 3c=3 5c=3 7c>2 7z<1000:m<1><3><5><7>;
+64?1S 2F 3S 4F 5S 6F 7S 8F 9M 2b{"，," 4b{"，," 6b{"，," 8b{"，," 1c<4 3c=3 5c=3 7c=3 9c>2 9z<1000:m<1><3><5><7><9>;
+
+###############################################################################
+# 序数词
+###############################################################################
+61?1S 2Y 2d#"${ds}":x<1>;
+
+###############################################################################
+# 数学运算符
+###############################################################################
+20?1F 2F 1b#"&" 2b#"&":d<1><2>;
+20?1F 2F 1b#"|" 2b#"|":d<1><2>;
+
+20?1F 2S 1b#"⅟":m<2>;d<1>;
+
+20?1F 2F 1b{"+＋" 2b#"∞":y<positive infinity>;
+20?1F 2F 1b{"-－" 2b#"∞":y<negative infinity>;
+
+#40?1F 2M 1b{"+＋":y<positive>;m<2>;
+40?1F 2M 1b{"-－":y<negative>;m<2>;
+
+# ^2
+60?1F 2S 1b{"^＾":y<to the>;x<2>;y<power>;
+
+# =1
+60?1F 2M 1b{"=＝<﹤>﹥≤≦≯≥≧≮≈≠":d<1>;m<2>;
+
+60?1F 2Y 2c=1 1b{"=＝<﹤>﹥≤≦≯≥≧≮≈≠":d<1>;y<2>;
+
+# =-1
+70?1F 2F 3M 1b{"=＝<﹤>﹥≤≦≯≥≧≮≈≠×÷" 2b{"-－":d<1>;y<negative>;m<3>;
+
+70?1F 2F 3Y 3c=1 1b{"=＝<﹤>﹥≤≦≯≥≧≮≈≠×÷" 2b{"-－":d<1>;y<negative>;y<3>;
+
+# 1=1
+80?1M 2F 3M 2b{"=＝<﹤>﹥≤≦≯≥≧≮≈≠×÷":m<1>;d<2>;m<3>;
+80?1M 2F 3M 2b{"+＋":m<1>;y<plus>;m<3>;
+80?1M 2F 3M 2b{"-－":m<1>;y<minus>;m<3>;
+80?1M 2F 3M 2b{"*×﹡＊":m<1>;y<multiplied by>;m<3>;
+80?1M 2F 3M 2b{"÷":m<1>;y<divided by>;m<3>;
+
+80?1Y 2F 3M 1c=1 2b{"=＝<﹤>﹥≤≦≯≥≧≮≈≠×÷":y<1>;d<2>;m<3>;
+80?1Y 2F 3M 1c=1 2b{"+＋":y<1>;y<plus>;m<3>;
+80?1Y 2F 3M 1c=1 2b{"-－":y<1>;y<minus>;m<3>;
+80?1Y 2F 3M 1c=1 2b{"*×﹡＊":y<1>;y<multiplied by>;m<3>;
+80?1Y 2F 3M 1c=1 2b{"÷":y<1>;y<divided by>;m<3>;
+
+80?1M 2F 3Y 3c=1 2b{"=＝<﹤>﹥≤≦≯≥≧≮≈≠×÷":m<1>;d<2>;y<3>;
+80?1M 2F 3Y 3c=1 2b{"+＋":m<1>;y<plus>;y<3>;
+80?1M 2F 3Y 3c=1 2b{"-－":m<1>;y<minus>;y<3>;
+80?1M 2F 3Y 3c=1 2b{"*×﹡＊":m<1>;y<multiplied by>;y<3>;
+80?1M 2F 3Y 3c=1 2b{"÷":m<1>;y<divided by>;y<3>;
+
+#80?1Y 2F 3Y 1c=1 3c=1 2b{"=＝<﹤>﹥≤≦≯≥≧≮≈≠×÷":y<1>;d<2>;y<3>;
+#80?1Y 2F 3Y 1c=1 3c=1 2b{"+＋":y<1>;y<plus>;y<3>;
+#80?1Y 2F 3Y 1c=1 3c=1 2b{"-－":y<1>;y<minus>;y<3>;
+#80?1Y 2F 3Y 1c=1 3c=1 2b{"*×﹡＊":y<1>;y<multiplied by>;y<3>;
+#80?1Y 2F 3Y 1c=1 3c=1 2b{"÷":y<1>;y<divided by>;y<3>;
+
+
+# 1=-1
+90?1M 2F 3F 4M 2b{"=＝<﹤>﹥≤≦≯≥≧≮≈≠×÷" 3b{"-－":m<1>;d<2>;y<negative>;m<4>;
+90?1M 2F 3F 4M 2b{"+＋" 3b{"-－":m<1>;y<plus negative>;m<4>;
+90?1M 2F 3F 4M 2b{"-－" 3b{"-－":m<1>;y<minus negative>;m<4>;
+90?1M 2F 3F 4M 2b{"*×﹡＊" 3b{"-－":m<1>;y<multiplied by negative>;m<4>;
+90?1M 2F 3F 4M 2b{"/÷／" 3b{"-－":m<1>;y<divided by negative>;m<4>;
+
+90?1Y 2F 3F 4M 1c=1 2b{"=＝<﹤>﹥≤≦≯≥≧≮≈≠×÷" 3b{"-－":y<1>;d<2>;y<negative>;m<4>;
+90?1Y 2F 3F 4M 1c=1 2b{"+＋" 3b{"-－":y<1>;y<plus negative>;m<4>;
+90?1Y 2F 3F 4M 1c=1 2b{"-－" 3b{"-－":y<1>;y<minus negative>;m<4>;
+90?1Y 2F 3F 4M 1c=1 2b{"*×﹡＊" 3b{"-－":y<1>;y<multiplied by negative>;m<4>;
+90?1Y 2F 3F 4M 1c=1 2b{"/÷／" 3b{"-－":y<1>;y<divided by negative>;m<4>;
+
+90?1M 2F 3F 4Y 4c=1 2b{"=＝<﹤>﹥≤≦≯≥≧≮≈≠×÷" 3b{"-－":m<1>;d<2>;y<negative>;y<4>;
+90?1M 2F 3F 4Y 4c=1 2b{"+＋" 3b{"-－":m<1>;y<plus negative>;y<4>;
+90?1M 2F 3F 4Y 4c=1 2b{"-－" 3b{"-－":m<1>;y<minus negative>;y<4>;
+90?1M 2F 3F 4Y 4c=1 2b{"*×﹡＊" 3b{"-－":m<1>;y<multiplied by negative>;y<4>;
+90?1M 2F 3F 4Y 4c=1 2b{"/÷／" 3b{"-－":m<1>;y<divided by negative>;y<4>;
+
+90?1Y 2F 3F 4Y 1c=1 4c=1 2b{"=＝<﹤>﹥≤≦≯≥≧≮≈≠×÷" 3b{"-－":y<1>;d<2>;y<negative>;y<4>;
+90?1Y 2F 3F 4Y 1c=1 4c=1 2b{"+＋" 3b{"-－":y<1>;y<plus negative>;y<4>;
+90?1Y 2F 3F 4Y 1c=1 4c=1 2b{"-－" 3b{"-－":y<1>;y<minus negative>;y<4>;
+90?1Y 2F 3F 4Y 1c=1 4c=1 2b{"*×﹡＊" 3b{"-－":y<1>;y<multiplied by negative>;y<4>;
+90?1Y 2F 3F 4Y 1c=1 4c=1 2b{"/÷／" 3b{"-－":y<1>;y<divided by negative>;y<4>;
+
+# -1=-1
+100?1F 2M 3F 4F 5M 1b{"-－" 3b{"=＝<﹤>﹥≤≦≯≥≧≮≈≠×÷" 4b{"-－":y<negative>;m<2>;d<3>;y<negative>;m<5>;
+100?1F 2M 3F 4F 5M 1b{"-－" 3b{"+＋" 4b{"-－":y<negative>;m<2>;y<plus negative>;m<5>;
+100?1F 2M 3F 4F 5M 1b{"-－" 3b{"-－" 4b{"-－":y<negative>;m<2>;y<minus negative>;m<5>;
+100?1F 2M 3F 4F 5M 1b{"-－" 3b{"*×﹡＊" 4b{"-－":y<negative>;m<2>;y<multiplied by negative>;m<5>;
+100?1F 2M 3F 4F 5M 1b{"-－" 3b{"/÷／" 4b{"-－":y<negative>;m<2>;y<divided by negative>;m<5>;
+
+100?1F 2Y 3F 4F 5M 2c=1 1b{"-－" 3b{"=＝<﹤>﹥≤≦≯≥≧≮≈≠×÷" 4b{"-－":y<negative>;y<2>;d<3>;y<negative>;m<5>;
+100?1F 2Y 3F 4F 5M 2c=1 1b{"-－" 3b{"+＋" 4b{"-－":y<negative>;y<2>;y<plus negative>;m<5>;
+100?1F 2Y 3F 4F 5M 2c=1 1b{"-－" 3b{"-－" 4b{"-－":y<negative>;y<2>;y<minus negative>;m<5>;
+100?1F 2Y 3F 4F 5M 2c=1 1b{"-－" 3b{"*×﹡＊" 4b{"-－":y<negative>;y<2>;y<multiplied by negative>;m<5>;
+100?1F 2Y 3F 4F 5M 2c=1 1b{"-－" 3b{"/÷／" 4b{"-－":y<negative>;y<2>;y<divided by negative>;m<5>;
+
+100?1F 2M 3F 4F 5Y 5c=1 1b{"-－" 3b{"=＝<﹤>﹥≤≦≯≥≧≮≈≠×÷" 4b{"-－":y<negative>;m<2>;d<3>;y<negative>;y<5>;
+100?1F 2M 3F 4F 5Y 5c=1 1b{"-－" 3b{"+＋" 4b{"-－":y<negative>;m<2>;y<plus negative>;y<5>;
+100?1F 2M 3F 4F 5Y 5c=1 1b{"-－" 3b{"-－" 4b{"-－":y<negative>;m<2>;y<minus negative>;y<5>;
+100?1F 2M 3F 4F 5Y 5c=1 1b{"-－" 3b{"*×﹡＊" 4b{"-－":y<negative>;m<2>;y<multiplied by negative>;y<5>;
+100?1F 2M 3F 4F 5Y 5c=1 1b{"-－" 3b{"/÷／" 4b{"-－":y<negative>;m<2>;y<divided by negative>;y<5>;
+
+100?1F 2Y 3F 4F 5Y 2c=1 5c=1 1b{"-－" 3b{"=＝<﹤>﹥≤≦≯≥≧≮≈≠×÷" 4b{"-－":y<negative>;y<2>;d<3>;y<negative>;y<5>;
+100?1F 2Y 3F 4F 5Y 2c=1 5c=1 1b{"-－" 3b{"+＋" 4b{"-－":y<negative>;y<2>;y<plus negative>;y<5>;
+100?1F 2Y 3F 4F 5Y 2c=1 5c=1 1b{"-－" 3b{"-－" 4b{"-－":y<negative>;y<2>;y<minus negative>;y<5>;
+100?1F 2Y 3F 4F 5Y 2c=1 5c=1 1b{"-－" 3b{"*×﹡＊" 4b{"-－":y<negative>;y<2>;y<multiplied by negative>;y<5>;
+100?1F 2Y 3F 4F 5Y 2c=1 5c=1 1b{"-－" 3b{"/÷／" 4b{"-－":y<negative>;y<2>;y<divided by negative>;y<5>;
+
+# 1+1=
+100?1M 2F 3M 4F 2b{"+＋" 4b{"=＝<﹤>﹥≤≦≯≥≧≮≈≠":m<1>;y<plus>;m<3>;d<4>;
+100?1M 2F 3M 4F 2b{"-－" 4b{"=＝<﹤>﹥≤≦≯≥≧≮≈≠":m<1>;y<minus>;m<3>;d<4>;
+100?1M 2F 3M 4F 2b{"*×﹡＊" 4b{"=＝<﹤>﹥≤≦≯≥≧≮≈≠":m<1>;y<multiplied by>;m<3>;d<4>;
+100?1M 2F 3M 4F 2b{"/÷／" 4b{"=＝<﹤>﹥≤≦≯≥≧≮≈≠":m<1>;y<divided by>;m<3>;d<4>;
+
+100?1Y 2F 3M 4F 1c=1 2b{"+＋" 4b{"=＝<﹤>﹥≤≦≯≥≧≮≈≠":y<1>;y<plus>;m<3>;d<4>;
+100?1Y 2F 3M 4F 1c=1 2b{"-－" 4b{"=＝<﹤>﹥≤≦≯≥≧≮≈≠":y<1>;y<minus>;m<3>;d<4>;
+100?1Y 2F 3M 4F 1c=1 2b{"*×﹡＊" 4b{"=＝<﹤>﹥≤≦≯≥≧≮≈≠":y<1>;y<multiplied by>;m<3>;d<4>;
+100?1Y 2F 3M 4F 1c=1 2b{"/÷／" 4b{"=＝<﹤>﹥≤≦≯≥≧≮≈≠":y<1>;y<divided by>;m<3>;d<4>;
+
+100?1M 2F 3Y 4F 3c=1 2b{"+＋" 4b{"=＝<﹤>﹥≤≦≯≥≧≮≈≠":m<1>;y<plus>;y<3>;d<4>;
+100?1M 2F 3Y 4F 3c=1 2b{"-－" 4b{"=＝<﹤>﹥≤≦≯≥≧≮≈≠":m<1>;y<minus>;y<3>;d<4>;
+100?1M 2F 3Y 4F 3c=1 2b{"*×﹡＊" 4b{"=＝<﹤>﹥≤≦≯≥≧≮≈≠":m<1>;y<multiplied by>;y<3>;d<4>;
+100?1M 2F 3Y 4F 3c=1 2b{"/÷／" 4b{"=＝<﹤>﹥≤≦≯≥≧≮≈≠":m<1>;y<divided by>;y<3>;d<4>;
+
+100?1Y 2F 3Y 4F 1c=1 3c=1 2b{"+＋" 4b{"=＝<﹤>﹥≤≦≯≥≧≮≈≠":y<1>;y<plus>;y<3>;d<4>;
+100?1Y 2F 3Y 4F 1c=1 3c=1 2b{"-－" 4b{"=＝<﹤>﹥≤≦≯≥≧≮≈≠":y<1>;y<minus>;y<3>;d<4>;
+100?1Y 2F 3Y 4F 1c=1 3c=1 2b{"*×﹡＊" 4b{"=＝<﹤>﹥≤≦≯≥≧≮≈≠":y<1>;y<multiplied by>;y<3>;d<4>;
+100?1Y 2F 3Y 4F 1c=1 3c=1 2b{"/÷／" 4b{"=＝<﹤>﹥≤≦≯≥≧≮≈≠":y<1>;y<divided by>;y<3>;d<4>;
+
+# 运算符号的连写
+20?1F 2F 1b{"+＋-－*×﹡＊/÷／=＝<﹤>﹥≤≦≯≥≧≮≈≠" 2b{"+＋-－*×﹡＊/÷／=＝<﹤>﹥≤≦≯≥≧≮≈≠":f<1><2>;
+30?1F 2F 3F 1b{"+＋-－*×﹡＊/÷／=＝<﹤>﹥≤≦≯≥≧≮≈≠" 2b{"+＋-－*×﹡＊/÷／=＝<﹤>﹥≤≦≯≥≧≮≈≠" 3b{"+＋-－*×﹡＊/÷／=＝<﹤>﹥≤≦≯≥≧≮≈≠":f<1><2><3>;
+
+# 1024 x 768
+90?1S 2Y 3S 2d#"X":m<1>;t<miltiplied by>;m<3>;
+
+
+###############################################################################
+# 英文缩略语
+###############################################################################
+
+# VS. / ...
+20?1Y 2F 2b#"." 1d#"CO^CORP^DR^JUDG^KEN^LAB^LTD^MGR^MR^MRS^MS^NO^OXON^PROF^TEX^VIZ^YD^VS":d<1><2>;
+
+# co., ltd / L.A. / ...
+20?1Y 2F 3F 4Y 2b#"." 3b#"," 1d#"CO" 4d#"LTD":y<corporation>;y<limited>;
+20?1Y 2F 3Y 4F 2b#"." 4b#"." 1b#"L" 3b#"A":y<Los>;y<Angeles>;
+
+# int'l / o'er / ...
+20?1Y 2F 3Y 2b{"'’" 1d#"INT" 3d#"L":y<international>;
+20?1Y 2F 3Y 2b{"'’" 1d#"O" 3d#"ER":y<over>;
+20?1Y 2F 3Y 2b{"'’" 1d#"C" 3d#"MON":y<come on>;
+20?1Y 2F 3Y 2b{"'’" 1d#"PROBL" 3d#"Y":y<probably>;
+20?1Y 2F 3Y 2b{"'’" 1d#"CAPT" 3d#"N":y<captain>;
+
+# Dr Lee / Mr Liu
+20?1Y 2Y 1d#"DR^MR^MRS^MS":d<1>;y<2>;
+
+# ST. -> /saturday/saint/street/
+20?1Y 2F 2b#"." 1d#"ST":y<Saint>;
+30?1Y 2F 3S 1d#"ST" 2b#".":y<Street>;m<3>;
+30?1S 2Y 3F 2d#"ST" 3b#".":m<1>;y<Street>;
+100?1S 2Y 3Y 4F 2t#2"ST^ND^RD^TH" 3d#"ST" 4b#".":x<1>;y<Street>;
+30?1Y 2Y 3F 1d#"AT^IN^THE^OF" 2d#"ST" 3b#".":y<1>;y<Saint>;
+30?1Y 2F 3Y 1d#"ST" 2b#"." 3d#"WEST^OUEST":y<Street>;y<3>;
+
+# please
+10?1Y 1d#"PLZ":y<please>;
+
+# No.123
+100?1Y 2F 3S 1d#"NO" 2b#".":y<number>;m<3>;
+
+# cap 1
+30?1Y 2F 3M 1d#"CAP" 2b#".":y<Chapter>;m<3>;
+
+###############################################################################
+# 特殊符号
+###############################################################################
+# 15.0"TFT
+53?1M 2F 3Y 2b{"“”＂" 3c=3 3d{"TFT^ＴＦＴ^CRT^ＣＲＴ":m<1>;y<inches>;y<3>;
+
+# @
+10?1F 1b{"@﹫＠":y<AT>;
+
+# 组合笑脸符号
+30?1F 2F 3F 1b{"＃#+>≤╯@^_⊙<ㄒv╰☆﹏≥~=◎∩＾▁○" 2b{"＃#+>≤╯@^_⊙<ㄒv╰☆﹏≥~=◎∩＾▁○" 3b{"＃#+>≤╯@^_⊙<ㄒv╰☆﹏≥~=◎∩＾▁○":f<1><2><3>;
+40?1F 2F 3F 4F 1b{"＃#+>≤╯@^_⊙<ㄒv╰☆﹏≥~=◎∩＾▁○" 2b{"＃#+>≤╯@^_⊙<ㄒv╰☆﹏≥~=◎∩＾▁○" 3b{"＃#+>≤╯@^_⊙<ㄒv╰☆﹏≥~=◎∩＾▁○" 4b{"＃#+>≤╯@^_⊙<ㄒv╰☆﹏≥~=◎∩＾▁○":f<1><2><3><4>;
+50?1F 2F 3F 4F 5F 1b{"()＃#*~=:@▁○" 5b{"()＃#*~=:@▁○" 2b{"＃#+>≤╯@^_⊙<ㄒv╰☆﹏≥~=◎∩＾▁○" 3b{"＃#+>≤╯@^_⊙<ㄒv╰☆﹏≥~=◎∩＾▁○÷" 4b{"＃#+>≤╯@^_⊙<ㄒv╰☆﹏≥~=◎∩＾▁○":f<1><2><3><4><5>;
+60?1Y 2F 3F 4F 5F 6F 7Y 1d#"O" 7d#"O" 2b{"()＃#*~=:@▁○" 6b{"()＃#*~=:@▁○" 3b{"＃#+>≤╯@^_⊙<ㄒv╰☆﹏≥~=◎∩＾▁○" 4b{"＃#+>≤╯@^_⊙<ㄒv╰☆﹏≥~=◎∩＾▁○÷" 5b{"＃#+>≤╯@^_⊙<ㄒv╰☆﹏≥~=◎∩＾▁○":d<1><2><3><4><5><6><7>;
+
+30?1F 2Y 3F 1b{"＃#+>≤╯@^_⊙<ㄒv╰☆﹏≥~=◎∩＾▁○" 2b#"o^v" 3b{"＃#+>≤╯@^_⊙<ㄒv╰☆﹏≥~=◎∩＾▁○":f<1><2><3>;
+50?1F 2F 3Y 4F 5F 1b{"()＃#*~=:@▁○" 5b{"()＃#*~=:@▁○" 2b{"＃#+>≤╯@^_⊙<ㄒv╰☆﹏≥~=◎∩＾▁○" 3b#"o^v" 4b{"＃#+>≤╯@^_⊙<ㄒv╰☆﹏≥~=◎∩＾▁○":f<1><2><3><4><5>;
+
+
+#特殊书名号
+90?1F 2Y 3F 1b{"<﹤《" 3b{"》﹥>":f<《>;t<2>;f<》>;
+90?1F 2S 3F 1b{"<﹤《" 3b{"》﹥>":f<《>;m<2>;f<》>;
+
+# B2B
+#70?1Y 2M 3Y 2z=2:y<1>;y<to>;y<3>;
+
+# 特殊符号：#
+66?1S 2F 2b#"#":y<number>;s<1>;
+
+# R-014
+86?1Y 2F 3S 2b{"--－－" 3c<4:y<1>;f<2>;m<3>;
+87?1Y 2F 3S 2b{"--－－" 3h#1"0":y<1>;f<2>;s<3>;
+
+# & -> and
+50?1Y 2F 2b{"&＆":y<1>;y<and>;
+
+# p.53
+63?1Y 2S 1d#"P":y<page>;m<2>;
+
+###############################################################################
+# 常用网址、文件名后缀
+###############################################################################
+# 网址
+45?1Y 2F 1d#"WWW" 2b#".":y<triple>;y<W>;y<dot>;
+45?1F 2Y 1b#"." 2d#"COM^CN^NET^EDU^GOV^ORG^RU^JP^US":y<dot>;y<2>;
+45?1Y 2F 3Y 2b#"."  3d#"COM^CN^NET^EDU^GOV^ORG^RU^JP^US":y<1>;y<dot>;y<3>;
+# 126.com 163.com 189.cn
+100?1S 2F 3Y 2b#"." 3d#"COM^CN^NET^EDU^GOV^ORG":s<1>;y<dot>;y<3>; 
+# 51job.com
+100?1S 2Y 3F 4Y 3b#"." 4d#"COM^CN":s<1>;y<2>;y<dot>;y<4>; 
+# 音视频文件
+45?1F 2Y 1b#"." 2d#"DAT^MP^WAV^ISO^RM^RMVB^AVI^MPEG^MPG^MID^RAM^MID^AU^AIF^MOV^SWF":y<dot>;y<2>;
+# 压缩文件
+45?1F 2Y 1b#"." 2d#"ZIP^RAR^Z^TAR^GZ^BZ":y<dot>;y<2>;
+45?1F 2S 3Y 1b#"." 2z=7 3d#"Z":y<dot>;m<2>;y<3>;
+# 文档文件
+45?1F 2Y 1b#"." 2d#"TXT^C^CPP^CXX^LOG^ASM^OBJ^BAT^TMP^XLS^DOC^XLSX^DOCX^PDF^RTF^HTML^HTM^WPS^HLP":y<dot>;y<2>;
+# 图形文件
+45?1F 2Y 1b#"." 2d#"BMP^GIF^JPG^JPEG^PIC^PNG^TIF":y<dot>;y<2>;
+# 其他文件
+45?1F 2Y 1b#"." 2d#"SYS^DLL^EXT^EXE^OUT^DOT^BAK^SO^A^COM":y<dot>;y<2>;
+
+###############################################################################
+# 电话号码
+###############################################################################
+100?1F 2S 1b#"+" 2h#3"861" 2c=13:o<2>;
+100?1F 2S 3F 4S 1b#"+" 2b#"86" 3b{"--——–" 4h#1"1" 4c=11:s<2>;o<4>;
+100?1F 2S 1b#"+" 2h#5"00861" 2c=15:o<2>;
+10?1S 1h#1"1" 1c=11:o<1>;
+10?1S 1c=8:o<1>;
+
+#加特殊符号的电话号码
+10?1S 1h#1"1" 1c=5:o<1>;
+10?1S 1h#1"1" 1c=11:o<1>;
+91?1S 2F 3S 1h}3"0^400^800" 2b{"--——–" 3c>6:o<1>;f<2>;o<3>;
+91?1S 2F 3S 4F 5S 1h}3"0^400^800" 2b{"--——–" 4b{"--——–":o<1>;f<2>;o<3>;f<4>;o<5>;
+100?1Y 2S 3F 4S 1d#"DIAL" 2h}3"0^400^800" 3b{"--——–":y<1>;o<2>;f<3>;o<4>;
+100?1Y 2S 3F 4S 5F 6S 1d#"DIAL" 2h}3"0^400^800" 3b{"--——–" 5b{"--——–":y<1>;o<2>;f<3>;o<4>;f<5>;o<6>;
+
+
+40?1S 1c=5 1h#1"9^1":o<1>;
+40?1S 1c=11 1h#1"9^1":o<1>;
+100?1Y 2S 1d#"EMS^E":y<1>;s<2>;
+
+
+104?1Y 2Y 3S 1d#"NUMBER^ROOM" 2b#"is":y<1>;y<2>;o<3>;
+
+
+###############################################################################
+# 数字串
+###############################################################################
+# 常用固定数字串
+3?1S 1b#"10086^10010^5173":o<1>;
+3?1S 1c=3 1b{"126^263^101^202^303^404^505^606^707^808^909^798^888^666^985^211^115^863^911^119^120^110":o<1>;
+3?1S 1b#"918^5566^618^4399":s<1>;
+3?1S 1h#1"0":o<1>;
+
+# 特殊日期：9.11/9.18/3.15……
+4?1M 1b#"9.11":y<nine eleven>;
+#4?1M 1b#"9.18":y<nine eighteen>;
+#4?1M 1b#"3.15":y<march the fifteenth>;
+10?1S 2F 3S 1b#"9" 2b{"．·" 3b#"11":y<nine eleven>;
+#10?1S 2F 3S 1b#"9" 2b{"．·" 3b#"18":y<nine eighteen>;
+#10?1S 2F 3S 1b#"3" 2b{"．·" 3b#"15":y<march the fifteenth>;
+
+# ip
+210?1S 2F 3S 4F 5S 6F 7S 2b#"." 4b#"." 6b#".":s<1>;y<dot>;s<3>;y<dot>;s<5>;y<dot>;s<7>;
+
+# 版本号，图表Table 1.2.3
+200?1S 2F 3S 4F 5S 2b#"·^." 4b#"·^.":m<1>;t<dot>;m<3>;t<dot>;m<5>;
+198?1Y 2S 3F 4S 5F 6S 1d#"FIGURE^TABLE" 3b{"·.-" 5b{"·.-":y<1>;m<2>;y<dot>;m<4>;y<dot>;m<6>;
+198?1Y 2F 3S 4F 5S 6F 7S 1d#"FIG" 2b#"." 3b{"·.-" 5b{"·.-":y<Figure>;m<3>;y<dot>;m<5>;y<dot>;m<7>;
+198?1Y 2F 3S 4F 5S 6F 7S 1d#"TAB" 2b#"." 3b{"·.-" 5b{"·.-":y<Table>;m<3>;y<dot>;m<5>;y<dot>;m<7>;
+
+# 1002-1526-4165-1532
+207?1S 2F 3S 4F 5S 6F 7S 2b{"—－-―，、\＼/／" 4b{"—－-―，、\＼/／" 6b{"—－-―，、\＼/／":s<1>;f<2>;s<3>;f<4>;s<5>;f<6>;s<7>;
+
+# (6004501)
+30?1F 2S 3F 2c>4 1b{"(（" 3b{")）":s<2>;
+40?1F 2S 3F 2c=4 2z<2200 1b{"(（" 3b{")）":f<1>;n<2>;f<3>;
+
+# Serial：00000 Serial：00000-0 Serial：00000（0-0）
+180?1Y 2S 1d#"SERIAL^NUMBER^CODE^ZIP":y<1>;o<2>;
+181?1Y 2S 3F 4S 1d#"SERIAL^NUMBER^CODE^ZIP" 3b{"—－-―":y<1>;o<2>;y<hyphen>;o<4>;
+182?1Y 2S 3F 4S 5F 6S 7F 1d#"SERIAL^NUMBER^CODE^ZIP" 3b{"(（" 5b{"—－-―" 7b{")）":y<1>;o<2>;o<4>;y<hyphen>;o<6>;
+180?1Y 2F 3S 1d#"SERIAL^NUMBER^CODE^ZIP" 2b{":：":y<1>;f<2>;o<3>;
+181?1Y 2F 3S 4F 5S 1d#"SERIAL^NUMBER^CODE^ZIP" 2b{":：" 4b{"—－-―":y<1>;f<2>;o<3>;y<hyphen>;o<5>;
+182?1Y 2F 3S 4F 5S 6F 7S 8F 1d#"SERIAL^NUMBER^CODE^ZIP" 2b{":：" 4b{"(（" 6b{"—－-―" 8b{")）":y<1>;f<2>;o<3>;o<5>;y<hyphen>;o<7>;
+
+
+# 字母和符号的组合
+# FAX:3601363
+185?1Y 2F 3S 1c=2 1d{"ＩＤ^ID^ＳＮ^SN^ＭＢ^MB^CELERON^PENTIUM^BOEING^PORT^MASK^IP^ADDRESS^SUBNET^MAC^CODE^ZIP^NUMBER^SERIAL" 2b{"：:∶　	":y<1>;f<2>;s<3>;
+185?1Y 2F 3S 1c=3 1d{"ＦＡＸ^FAX^ＴＥＬ^TEL^ＮＵＭ^NUM^CELERON^PENTIUM^BOEING^PORT^MASK^IP^ADDRESS^SUBNET^MAC^CODE^ZIP^NUMBER^SERIAL" 2b{"：:∶　	":y<1>;f<2>;s<3>;
+
+# 18U836
+50?1S 2Y 3S 2c=1:s<1>;y<2>;s<3>;
+
+# 18U836-846
+51?1S 2Y 3S 4F 5S 4b{"—－-―–":s<1>;y<2>;s<3>;y<hyphen>;s<5>;
+# 18U836/846
+51?1S 2Y 3S 4F 5S 4b{"＼\/／":s<1>;y<2>;s<3>;f<4>;s<5>;
+
+
+###############################################################################
+# 特殊定制
+###############################################################################
+# 3M公司
+52?1M 2Y 1z=3 1c=1 2b#"M":m<1>;y<2>;
+
+# iphone 6s
+100?1Y 2S 3Y 1d#"IPHONE" 3c=1 2z>3 2z<9 3d#"S":y<1>;m<2>;y<3>;
+
+# AT&T
+100?1Y 2F 3Y 1b#"AT" 2b#"&" 3b#"T":i<1>;y<and>;y<3>;
+
+# BAT
+10?1Y 1b#"BAT^ATJ^AM":i<1>;
+
+100?1Y 2S 3Y 1d#"THE" 2z=1 3d#"ST":y<1>;y<first>;
+100?1Y 2S 3Y 1d#"THE" 2z=2 3d#"D^ND":y<1>;y<second>;
+100?1Y 2S 3Y 1d#"THE" 2z=3 3d#"D^RD":y<1>;y<third>;
+
+#Merry X'mas，Merry Xmas
+180?1Y 2Y 1d#"MERRY" 2d#"X'MAS":y<1>;y<Christmas>;
+180?1Y 2Y 1d#"MERRY" 2d#"XMAS":y<1>;y<Christmas>;
+

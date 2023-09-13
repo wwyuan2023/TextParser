@@ -130,7 +130,7 @@ class Vectorization(object):
             prosody[-1]["tone"] = Tone.idx2tone(sum(vector[i,90:99] * wr[:9]))
             prosody[-1]["syllable_boundary"] = int(sum(vector[i,99:101] * wr[:2]))
             prosody[-1]["word_boundary"] = int(sum(vector[i,101:103] * wr[:2]))
-            prosody[-1]["cx"] = GPOS.idx2gpos(sum(vector[i,103:164] * wr[:61]))
+            prosody[-1]["gpos"] = GPOS.idx2gpos(sum(vector[i,103:164] * wr[:61]))
             prosody[-1]["sent_type"] = SenType.idx2sentype(sum(vector[i,164:174] * wr[:10]))
             prosody[-1]["lang"] = Lang.idx2lang(sum(vector[i,174:176] * wr[:2]))
             prosody[-1]["position"] = int(sum(vector[i,176:256] * wr[:80]))
