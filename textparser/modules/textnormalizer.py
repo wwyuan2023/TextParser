@@ -1600,10 +1600,19 @@ class TextNormalizer(object):
             # Pinyin mark
             mr = self.regex['PinyinMark'].match(utt_text)
             if mr:
+                r1 = mr.group(1)
+                utt_text = utt_text[mr.end(1):]
                 py, tone = mr.group(2), mr.group(3)
-                if Syllable.is_py(py) and int(tone) <= 5 and pre_lang == Lang.CN:
-                    utt_text = utt_text[mr.end(1):]
-                    continue
+                if Syllable.is_py(py) and int(tone) <= 5:
+                    if pre_lang == Lang.CN:
+                        sub_text[-1] += r1
+                    else:
+                        sub_text.append("囧" + r1)
+                        sub_lang.append(Lang.CN)
+                else:
+                    sub_text.append(r1)
+                    sub_lang.append(Lang.EN)
+                continue
             # Symbol: blank
             mr = self.regex['Blank'].match(utt_text)
             if mr:
@@ -1645,20 +1654,20 @@ class TextNormalizer(object):
             func_name = f"{self.__class__.__name__}::{sys._getframe().f_code.co_name}"
             sys.stderr.write(f"{func_name}: input(context={context})> utt_id={utt_id}, utt_text=`{utt_text}`\n")
         
-        if context is None or context == "":
-            sub_text, sub_lang = self._split_text(utt_text)
-            utt_text = ""
-            for i in range(len(sub_text)):
+        sub_text, sub_lang = self._split_text(utt_text)
+        utt_text = ""
+        for i in range(len(sub_text)):
+            if context is None or context == "":
                 if sub_lang[i] == Lang.EN:
                     _, utt_text_ = self.textnorm_en(utt_id, sub_text[i])
                 else:
                     _, utt_text_ = self.textnorm_cn(utt_id, sub_text[i])
-                utt_text += utt_text_
-        elif context == Lang.EN:
-            utt_id, utt_text = self.textnorm_en(utt_id, utt_text)
-        else:
-            utt_id, utt_text = self.textnorm_cn(utt_id, utt_text)
-        
+            elif context == Lang.EN:
+                _, utt_text_ = self.textnorm_en(utt_id, sub_text[i])
+            else:
+                _, utt_text_ = self.textnorm_cn(utt_id, sub_text[i])
+            utt_text += utt_text_
+                
         if self.loglv > 0:
             sys.stderr.write(f"{func_name}: output(context={context})> utt_id={utt_id}, utt_text=`{utt_text}`\n")
         
