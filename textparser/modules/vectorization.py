@@ -138,11 +138,7 @@ class Vectorization(object):
         return prosody
 
 
-def vectorization(file=sys.stdin):
-    assert len(sys.argv) > 1, "outdir must be given!"
-    outdir = sys.argv[1]
-    
-    loglv = 0 if len(sys.argv) <= 2 else int(sys.argv[2])
+def vectorization(file=sys.stdin, loglv=0):
     
     if not os.path.exists(outdir):
         os.makedirs(outdir)
@@ -180,7 +176,6 @@ def vectorization(file=sys.stdin):
 
 
 def devectorization(file=sys.stdin):
-    assert len(sys.argv) > 1, "-d must be given!"
     vectorization = Vectorization()
     fid = open(file, 'rb') if not hasattr(file, 'read') else file
     if fid.fileno() == 0:
@@ -196,14 +191,35 @@ def devectorization(file=sys.stdin):
 
 
 def main():
-    assert len(sys.argv) > 1, "outdir or -d must be given!"
-    if sys.argv[1].lower() == "-d":
-        devectorization(sys.stdin if len(sys.argv) == 2 else sys.argv[2])
+    
+    # parse arguments
+    file, outdir, _d, loglv = sys.stdin, None, False, 0
+    i = 1
+    while i < len(sys.argv):
+        a = sys.argv[i]
+        if len(a) > 1 and a[0] == "-":
+            if a == "-l" or a == "--loglv":
+                i += 1
+                loglv = int(sys.argv[i])
+            elif a == "-o" or a == "--outdir":
+                i += 1
+                outdir = sys.argv[i]
+            elif a == "-d":
+                _d = True
+            else:
+                assert a[0] != "-", f"Unkown argument {a}\n"
+        else:
+            file = sys.stdin if a == "-" else a
+        i += 1
+    assert (outdir is None and _d) or (outdir is not None and not _d), f"--outdir or -d must be given!\n"
+    
+    if _d:
+        devectorization(file)
     else:
-        vectorization()
+        vectorization(file, loglv=loglv)
 
 
 if __name__ == "__main__":
-    
-    main()
 
+    main()
+    

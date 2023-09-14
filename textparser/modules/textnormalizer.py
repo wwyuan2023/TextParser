@@ -1640,30 +1640,50 @@ class TextNormalizer(object):
         
         return sub_text_, sub_lang_
     
-    def __call__(self, utt_id, utt_text):
+    def __call__(self, utt_id, utt_text, context=Lang.CN):
         if self.loglv > 0:
             func_name = f"{self.__class__.__name__}::{sys._getframe().f_code.co_name}"
-            sys.stderr.write(f"{func_name}: input> utt_id={utt_id}, utt_text=`{utt_text}`\n")
+            sys.stderr.write(f"{func_name}: input(context={context})> utt_id={utt_id}, utt_text=`{utt_text}`\n")
         
-        sub_text, sub_lang = self._split_text(utt_text)
-        utt_text = ""
-        for i in range(len(sub_text)):
-            if sub_lang[i] == Lang.EN:
-                _, utt_text_ = self.textnorm_en(utt_id, sub_text[i])
-            else:
-                _, utt_text_ = self.textnorm_cn(utt_id, sub_text[i])
-            utt_text += utt_text_
+        if context is None or context == "":
+            sub_text, sub_lang = self._split_text(utt_text)
+            utt_text = ""
+            for i in range(len(sub_text)):
+                if sub_lang[i] == Lang.EN:
+                    _, utt_text_ = self.textnorm_en(utt_id, sub_text[i])
+                else:
+                    _, utt_text_ = self.textnorm_cn(utt_id, sub_text[i])
+                utt_text += utt_text_
+        elif context == Lang.EN:
+            utt_id, utt_text = self.textnorm_en(utt_id, utt_text)
+        else:
+            utt_id, utt_text = self.textnorm_cn(utt_id, utt_text)
         
         if self.loglv > 0:
-            sys.stderr.write(f"{func_name}: output> utt_id={utt_id}, utt_text=`{utt_text}`\n")
+            sys.stderr.write(f"{func_name}: output(context={context})> utt_id={utt_id}, utt_text=`{utt_text}`\n")
         
         return utt_id, utt_text
         
 
-def main(file=sys.stdin):
-    loglv = 0
-    if len(sys.argv) > 1:
-        loglv = int(sys.argv[1])
+def main():
+    
+    # parse arguments
+    file, context, loglv = sys.stdin, Lang.CN, 0
+    i = 1
+    while i < len(sys.argv):
+        a = sys.argv[i]
+        if len(a) > 1 and a[0] == "-":
+            if a == "-l" or a == "--loglv":
+                i += 1
+                loglv = int(sys.argv[i])
+            elif a == "-c" or a == "--context":
+                i += 1
+                context = sys.argv[i]
+            else:
+                assert a[0] != "-", f"Unkown argument {a}\n"
+        else:
+            file = sys.stdin if a == "-" else a
+        i += 1
     
     textnormalizer = TextNormalizer(loglv=loglv)
 
@@ -1679,7 +1699,7 @@ def main(file=sys.stdin):
         if utt_text == '': continue
 
         # text normalization
-        utt_id, norm_text = textnormalizer(utt_id, utt_text)
+        utt_id, norm_text = textnormalizer(utt_id, utt_text, context=context)
 
         # output
         line = f'{utt_id}    {norm_text}\n'
@@ -1701,9 +1721,3 @@ if __name__ == "__main__":
     
     main()
     
-
-
-
-
-
-

@@ -347,11 +347,24 @@ class Pronunciation(object):
         return segtext
 
 
-def main(file=sys.stdin):
-    loglv = 0
-    if len(sys.argv) > 1:
-        loglv = int(sys.argv[1])
+def main():
     
+    # parse arguments
+    file, loglv = sys.stdin, 0
+    i = 1
+    while i < len(sys.argv):
+        a = sys.argv[i]
+        if len(a) > 1 and a[0] == "-":
+            if a == "-l" or a == "--loglv":
+                i += 1
+                loglv = int(sys.argv[i])
+            else:
+                assert a[0] != "-", f"Unkown argument {a}\n"
+        else:
+            file = sys.stdin if a == "-" else a
+        i += 1
+    
+    # construct instance
     pronunciation = Pronunciation(loglv=loglv)
 
     fid = open(file, 'rt') if not hasattr(file, 'read') else file
@@ -387,3 +400,4 @@ def main(file=sys.stdin):
 if __name__ == "__main__":
     
     main()
+    
