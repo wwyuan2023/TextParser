@@ -1638,7 +1638,7 @@ class TextNormalizer(object):
                 sub_lang[i] = next_lang
             next_lang = sub_lang[i]
         
-        # combines
+        # combines same lang
         sub_text_, sub_lang_ = [], []
         for text, lang in zip(sub_text, sub_lang):
             if len(sub_text_) > 0 and sub_lang_[-1] == lang:
@@ -1655,19 +1655,20 @@ class TextNormalizer(object):
             sys.stderr.write(f"{func_name}: input(context={context})> utt_id={utt_id}, utt_text=`{utt_text}`\n")
         
         sub_text, sub_lang = self._split_text(utt_text)
-        utt_text = ""
-        for i in range(len(sub_text)):
-            if context is None or context == "":
+        
+        if context is None or context == "":
+            utt_text = ""
+            for i in range(len(sub_text)):
                 if sub_lang[i] == Lang.EN:
                     _, utt_text_ = self.textnorm_en(utt_id, sub_text[i])
                 else:
                     _, utt_text_ = self.textnorm_cn(utt_id, sub_text[i])
-            elif context == Lang.EN:
-                _, utt_text_ = self.textnorm_en(utt_id, sub_text[i])
-            else:
-                _, utt_text_ = self.textnorm_cn(utt_id, sub_text[i])
             utt_text += utt_text_
-                
+        elif context == Lang.EN:
+            _, utt_text = self.textnorm_en(utt_id, "".join(sub_text))
+        else:
+            _, utt_text = self.textnorm_cn(utt_id, "".join(sub_text))
+        
         if self.loglv > 0:
             sys.stderr.write(f"{func_name}: output(context={context})> utt_id={utt_id}, utt_text=`{utt_text}`\n")
         
