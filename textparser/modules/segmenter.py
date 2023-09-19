@@ -977,7 +977,7 @@ class Segmenter(object):
         self.regex = {
             'Chinese': re.compile(r'^([\u4e00-\u9fa5]+)'),
             'English': re.compile(r'^([a-zA-Z\']+)'),
-            'PinyinMark': re.compile(r'^([\(\[（【]([a-zA-Z]+)(\d)[\)\]）】])'),
+            'PinyinMark': re.compile(r'^([<\(\[（【]([a-zA-Z]+)(\d)[>\)\]）】])'),
             'Blank': re.compile(r'^(\s+)'),
         }
         if self.loglv > 0:

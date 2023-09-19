@@ -400,6 +400,7 @@ class TextNormalizerCN(object):
                     or (tokenlist[i+1][1] == '（' and tokenlist[i+4][1] == '）')
                     or (tokenlist[i+1][1] == '[' and tokenlist[i+4][1] == ']')
                     or (tokenlist[i+1][1] == '【' and tokenlist[i+4][1] == '】')
+                    or (tokenlist[i+1][1] == '<' and tokenlist[i+4][1] == '>')
                 )
                 and (tokenlist[i+2][0] == 'Y' and tokenlist[i+3][0] == 'S')
                 and (Syllable.is_py(tokenlist[i+2][1]) and 0 <= int(tokenlist[i+3][1]) <= 5)
@@ -1564,7 +1565,7 @@ class TextNormalizer(object):
         self.regex = {
             'Chinese': re.compile(r'^([\u4e00-\u9fa5]+)'),
             'English': re.compile(r'^([a-zA-Z\']+)'),
-            'PinyinMark': re.compile(r'^([\(\[（【]([a-zA-Z]+)(\d)[\)\]）】])'),
+            'PinyinMark': re.compile(r'^([<\(\[（【]([a-zA-Z]+)(\d)[>\)\]）】])'),
             'Blank': re.compile(r'^(\s+)'),
         }
         
