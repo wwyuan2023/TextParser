@@ -8,7 +8,7 @@ from textparser.utils import Lang
 from textparser.version import __version__
 
 class TextParser(object):
-    def __init__(self, res_roor_dir=None, context=Lang.CN, loglv=0):
+    def __init__(self, res_roor_dir=None, context="", loglv=0):
         self.context = context
         self.loglv = loglv
         self.max_utt_length = Config.max_syllable # max syllale number of each sub-utterance
