@@ -10,6 +10,7 @@ from textparser import Config
 from textparser.utils import Syllable, SegText
 from textparser.utils import GPOS, Lang
 from textparser.third_part import G2p
+from textparser.version import __version__
 
 
 class FSM(object):
@@ -1088,17 +1089,37 @@ class Segmenter(object):
 
 def main():
     
-    # parse arguments
     file, loglv = sys.stdin, 0
+    
+    # parse arguments
+    help_str = f"usage: text-segmenter OPTIONS... [FILE]\n\n"
+    help_str += f"Text segmenter for Chinese or English text, version={__version__}\n\n"
+    help_str += f"Print segmented results of lines from each FILE to standard output.\n"
+    help_str += f"With no FILE, or when FILE is -, read standard input.\n\n"
+    help_str += f"Mandatory arguments to long options are mandatory for short options too.\n"
+    help_str += f"    -h, --help               show this help message and exit\n"
+    help_str += f"    -l, --loglv LOGLEVEL     set log level, the optional value is 0, 1 and 2, default={loglv}\n"
+    help_str += f"    -v, --version            output version information and exit\n\n"
+    
     i = 1
     while i < len(sys.argv):
         a = sys.argv[i]
         if len(a) > 1 and a[0] == "-":
-            if a == "-l" or a == "--loglv":
+            if a == "-h" or a == "--help":
+                print(help_str)
+                sys.exit(0)
+            elif a == "-l" or a == "--loglv":
                 i += 1
                 loglv = int(sys.argv[i])
+            elif a == "-v" or a == "--version":
+                print(f"text-segmenter, version={__version__}"
+                      f"Copyright (c) 2023 wwyuan2023\n"
+                      f"MIT License <https://mit-license.org/>\n\n"
+                      f"Written by Wuwen YUAN.\n")
+                sys.exit(0)
             else:
-                assert a[0] != "-", f"Unkown argument {a}\n"
+                print(f"Unkown argument {a}\n\n{help_str}")
+                sys.exit(-1)
         else:
             file = sys.stdin if a == "-" else a
         i += 1

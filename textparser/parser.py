@@ -53,14 +53,29 @@ class TextParser(object):
 
 
 def main():
-
+    
+    file, outdir, context, loglv = sys.stdin, None, "", 0
+    
     # parse arguments
-    file, outdir, context, loglv = sys.stdin, None, Lang.CN, 0
+    help_str = f"usage: text-parser OPTIONS... [FILE]\n\n"
+    help_str += f"Text parser for Chinese or English text, version={__version__}\n\n"
+    help_str += f"Print parsed results of lines from each FILE to standard output.\n"
+    help_str += f"With no FILE, or when FILE is -, read standard input.\n\n"
+    help_str += f"Mandatory arguments to long options are mandatory for short options too.\n"
+    help_str += f"    -h, --help               show this help message and exit\n"
+    help_str += f"    -l, --loglv LOGLEVEL     set log level, the optional value is 0, 1 and 2, default={loglv}\n"
+    help_str += f"    -c, --context CONTEXT    set language context, the optional value is CN, EN or \"\", default=\"{context}\"\n"
+    help_str += f"    -o, --outdir OUTDIR      directory to save vectorization of parsed result\n"
+    help_str += f"    -v, --version            output version information and exit\n\n"
+    
     i = 1
     while i < len(sys.argv):
         a = sys.argv[i]
         if len(a) > 1 and a[0] == "-":
-            if a == "-l" or a == "--loglv":
+            if a == "-h" or a == "--help":
+                print(help_str)
+                sys.exit(0)
+            elif a == "-l" or a == "--loglv":
                 i += 1
                 loglv = int(sys.argv[i])
             elif a == "-c" or a == "--context":
@@ -70,10 +85,14 @@ def main():
                 i += 1
                 outdir = sys.argv[i]
             elif a == "-v" or a == "--version":
-                print(f"{sys.argv[0]}, version={__version__}")
+                print(f"text-parser, version={__version__}"
+                      f"Copyright (c) 2023 wwyuan2023\n"
+                      f"MIT License <https://mit-license.org/>\n\n"
+                      f"Written by Wuwen YUAN.\n")
                 sys.exit(0)
             else:
-                assert a[0] != "-", f"Unkown argument {a}\n"
+                print(f"Unkown argument {a}\n\n{help_str}")
+                sys.exit(-1)
         else:
             file = sys.stdin if a == "-" else a
         i += 1

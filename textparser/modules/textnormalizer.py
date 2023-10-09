@@ -9,6 +9,7 @@ from zhconv import convert
 import textparser
 from textparser import Config
 from textparser.utils import DBC2SBC, Syllable, Lang
+from textparser.version import __version__
 
 
 class Num2WrdCN(object):
@@ -1647,29 +1648,35 @@ class TextNormalizer(object):
             else:
                 sub_text_.append(text)
                 sub_lang_.append(lang)
+        sub_text, sub_lang = sub_text_, sub_lang_
         
-        return sub_text_, sub_lang_
+        # judge sentence
+        sub_sent = [ True if text[-1] in "，。！？；,.!?;" else False for text in sub_text ]
+        
+        return sub_text, sub_lang, sub_sent
     
     def __call__(self, utt_id, utt_text, context=Lang.CN):
         if self.loglv > 0:
             func_name = f"{self.__class__.__name__}::{sys._getframe().f_code.co_name}"
             sys.stderr.write(f"{func_name}: input(context={context})> utt_id={utt_id}, utt_text=`{utt_text}`\n")
         
-        sub_text, sub_lang = self._split_text(utt_text)
+        sub_text, sub_lang, sub_sent = self._split_text(utt_text)
         
-        if context is None or context == "":
-            utt_text = ""
-            for i in range(len(sub_text)):
-                if sub_lang[i] == Lang.EN:
-                    _, utt_text_ = self.textnorm_en(utt_id, sub_text[i])
-                else:
-                    _, utt_text_ = self.textnorm_cn(utt_id, sub_text[i])
-            utt_text += utt_text_
+        if context is None: context = ""
+        if context == Lang.CN:
+            _, utt_text = self.textnorm_cn(utt_id, "".join(sub_text))
         elif context == Lang.EN:
             _, utt_text = self.textnorm_en(utt_id, "".join(sub_text))
         else:
-            _, utt_text = self.textnorm_cn(utt_id, "".join(sub_text))
-        
+            # smart decision
+            utt_text = ""
+            for i in range(len(sub_text)):
+                if (i == len(sub_text) - 1 or sub_sent[i]) and (i == 0 or sub_sent[i-1]) and sub_lang[i] == Lang.EN:
+                    _, utt_text_ = self.textnorm_en(utt_id, sub_text[i])
+                else:
+                    _, utt_text_ = self.textnorm_cn(utt_id, sub_text[i])
+                utt_text += utt_text_
+
         if self.loglv > 0:
             sys.stderr.write(f"{func_name}: output(context={context})> utt_id={utt_id}, utt_text=`{utt_text}`\n")
         
@@ -1678,20 +1685,41 @@ class TextNormalizer(object):
 
 def main():
     
+    file, context, loglv = sys.stdin, "", 0
+    
     # parse arguments
-    file, context, loglv = sys.stdin, Lang.CN, 0
+    help_str = f"usage: text-normalizer OPTIONS... [FILE]\n\n"
+    help_str += f"Text normalizer for Chinese or English text, version={__version__}\n\n"
+    help_str += f"Print normalized results of lines from each FILE to standard output.\n"
+    help_str += f"With no FILE, or when FILE is -, read standard input.\n\n"
+    help_str += f"Mandatory arguments to long options are mandatory for short options too.\n"
+    help_str += f"    -h, --help               show this help message and exit\n"
+    help_str += f"    -l, --loglv LOGLEVEL     set log level, the optional value is 0, 1 and 2, default={loglv}\n"
+    help_str += f"    -c, --context CONTEXT    set language context, the optional value is CN, EN or \"\", default=\"{context}\"\n"
+    help_str += f"    -v, --version            output version information and exit\n\n"
+    
     i = 1
     while i < len(sys.argv):
         a = sys.argv[i]
         if len(a) > 1 and a[0] == "-":
-            if a == "-l" or a == "--loglv":
+            if a == "-h" or a == "--help":
+                print(help_str)
+                sys.exit(0)
+            elif a == "-l" or a == "--loglv":
                 i += 1
                 loglv = int(sys.argv[i])
             elif a == "-c" or a == "--context":
                 i += 1
                 context = sys.argv[i]
+            elif a == "-v" or a == "--version":
+                print(f"text-normalizer, version={__version__}"
+                      f"Copyright (c) 2023 wwyuan2023\n"
+                      f"MIT License <https://mit-license.org/>\n\n"
+                      f"Written by Wuwen YUAN.\n")
+                sys.exit(0)
             else:
-                assert a[0] != "-", f"Unkown argument {a}\n"
+                print(f"Unkown argument {a}\n\n{help_str}")
+                sys.exit(-1)
         else:
             file = sys.stdin if a == "-" else a
         i += 1

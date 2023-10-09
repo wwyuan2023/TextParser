@@ -7,6 +7,7 @@ from textparser import Config
 from textparser.utils import GPOS, SenType, Syllable, Phoneme, Tone, Lang
 from textparser.utils import SegText
 from textparser.utils import is_punctuation
+from textparser.version import __version__
 
 
 def one_hot(index, n_class):
@@ -192,13 +193,28 @@ def devectorization(file=sys.stdin):
 
 def main():
     
-    # parse arguments
     file, outdir, _d, loglv = sys.stdin, None, False, 0
+    
+    # parse arguments
+    help_str = f"usage: text-vectorization OPTIONS... [FILE]\n\n"
+    help_str += f"Text vectorization for Chinese or English segtext, version={__version__}\n\n"
+    help_str += f"Print vectorization results of lines from each FILE to standard output.\n"
+    help_str += f"With no FILE, or when FILE is -, read standard input.\n\n"
+    help_str += f"Mandatory arguments to long options are mandatory for short options too.\n"
+    help_str += f"    -h, --help               show this help message and exit\n"
+    help_str += f"    -d                       de-vectorization for debug, FILE must be vectorization file\n"
+    help_str += f"    -l, --loglv LOGLEVEL     set log level,  the optional value is 0, 1 and 2, default={loglv}\n"
+    help_str += f"    -o, --outdir OUTDIR      directory to save vectorization of parsed result\n"
+    help_str += f"    -v, --version            output version information and exit\n\n"
+    
     i = 1
     while i < len(sys.argv):
         a = sys.argv[i]
         if len(a) > 1 and a[0] == "-":
-            if a == "-l" or a == "--loglv":
+            if a == "-h" or a == "--help":
+                print(help_str)
+                sys.exit(0)
+            elif a == "-l" or a == "--loglv":
                 i += 1
                 loglv = int(sys.argv[i])
             elif a == "-o" or a == "--outdir":
@@ -206,8 +222,15 @@ def main():
                 outdir = sys.argv[i]
             elif a == "-d":
                 _d = True
+            elif a == "-v" or a == "--version":
+                print(f"text-parser, version={__version__}"
+                      f"Copyright (c) 2023 wwyuan2023\n"
+                      f"MIT License <https://mit-license.org/>\n\n"
+                      f"Written by Wuwen YUAN.\n")
+                sys.exit(0)
             else:
-                assert a[0] != "-", f"Unkown argument {a}\n"
+                print(f"Unkown argument {a}\n\n{help_str}")
+                sys.exit(-1)
         else:
             file = sys.stdin if a == "-" else a
         i += 1
