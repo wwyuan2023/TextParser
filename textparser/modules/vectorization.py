@@ -139,7 +139,7 @@ class Vectorization(object):
         return prosody
 
 
-def vectorization(file=sys.stdin, loglv=0):
+def vectorization(file=sys.stdin, outdir=None, loglv=0):
     
     if not os.path.exists(outdir):
         os.makedirs(outdir)
@@ -239,7 +239,7 @@ def main():
     if _d:
         devectorization(file)
     else:
-        vectorization(file, loglv=loglv)
+        vectorization(file, outdir, loglv=loglv)
 
 
 if __name__ == "__main__":
