@@ -407,7 +407,7 @@ class TextNormalizerCN(object):
                 and (Syllable.is_py(tokenlist[i+2][1]) and 0 <= int(tokenlist[i+3][1]) <= 5)
             ):
                 if len(outputs) > 0 and outputs[-1][0] == 'H':
-                    outputs[-1][1] += tokenlist[-1][1]
+                    outputs[-1][1] += tokenlist[i][1]
                 else:
                     outputs.append(tokenlist[i])
                 position = len(outputs[-1][1])
@@ -429,7 +429,7 @@ class TextNormalizerCN(object):
             continue
         
         # trace token
-        if self.loglv > 1:
+        if self.loglv > 0:
             sys.stderr.write(self._token_printer(outputs))
         
         return outputs
@@ -450,7 +450,7 @@ class TextNormalizerCN(object):
                 else:
                     ret = self.match(tokens, rule)
                 if ret <= 0:
-                    if self.loglv >= 2:
+                    if self.loglv > 2:
                         sys.stderr.write(f"Match Rule:\n")
                         sys.stderr.write(self._rule_printer(rule))
                         sys.stderr.write(f"Failed, ret = {ret}\n")
@@ -461,7 +461,7 @@ class TextNormalizerCN(object):
 
             weight, tknlist, tknprop, result = rule_matched
             if self.loglv > 0:
-                sys.stderr.write(f"Match success:\n")
+                sys.stderr.write(f"Tokens={tokens}\nMatch success:\n")
                 sys.stderr.write(self._rule_printer(rule_matched))
             # 连接规则的一些情况判断
             if link_rule:
@@ -1237,12 +1237,13 @@ class TextNormalizerEN(object):
                     or (tokenlist[i+1][1] == '（' and tokenlist[i+4][1] == '）')
                     or (tokenlist[i+1][1] == '[' and tokenlist[i+4][1] == ']')
                     or (tokenlist[i+1][1] == '【' and tokenlist[i+4][1] == '】')
+                    or (tokenlist[i+1][1] == '<' and tokenlist[i+4][1] == '>')
                 )
                 and (tokenlist[i+2][0] == 'Y' and tokenlist[i+3][0] == 'S')
                 and (Syllable.is_py(tokenlist[i+2][1]) and 0 <= int(tokenlist[i+3][1]) <= 5)
             ):
                 if len(outputs) > 0 and outputs[-1][0] == 'H':
-                    outputs[-1][1] += tokenlist[-1][1]
+                    outputs[-1][1] += tokenlist[i][1]
                 else:
                     outputs.append(tokenlist[i])
                 position = len(outputs[-1][1])
@@ -1264,7 +1265,7 @@ class TextNormalizerEN(object):
             continue
         
         # trace token
-        if self.loglv > 1:
+        if self.loglv > 0:
             sys.stderr.write(self._token_printer(outputs))
         
         return outputs
@@ -1285,7 +1286,7 @@ class TextNormalizerEN(object):
                 else:
                     ret = self.match(tokens, rule)
                 if ret <= 0:
-                    if self.loglv >= 2:
+                    if self.loglv > 2:
                         sys.stderr.write(f"Match Rule:\n")
                         sys.stderr.write(self._rule_printer(rule))
                         sys.stderr.write(f"Failed, ret = {ret}\n")
@@ -1296,7 +1297,7 @@ class TextNormalizerEN(object):
 
             weight, tknlist, tknprop, result = rule_matched
             if self.loglv > 0:
-                sys.stderr.write(f"Match success:\n")
+                sys.stderr.write(f"Tokens={tokens}\nMatch success:\n")
                 sys.stderr.write(self._rule_printer(rule_matched))
             # 连接规则的一些情况判断
             if link_rule:
