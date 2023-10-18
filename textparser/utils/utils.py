@@ -33,12 +33,6 @@ def is_all_english(strs):
             return False
     return True
 
-def is_all_english(strs):
-    for _char in strs:
-        if is_english(_char):
-            return True
-    return False
-
 def is_quantifier(strs):
     if re.match('^[零幺两一二三四五六七八九十百千万亿点]+$', strs):
         return True

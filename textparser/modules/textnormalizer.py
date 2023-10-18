@@ -2,14 +2,21 @@
 
 import os, sys
 import re
-
-#from opencc import OpenCC
-from zhconv import convert
+import json
 
 import textparser
 from textparser import Config
 from textparser.utils import DBC2SBC, Syllable, Lang
 from textparser.version import __version__
+
+
+class T2S(object):
+    def __init__(self, res_file):
+        with open(res_file, 'r', encoding="utf-8") as f:
+            self.map = json.load(f)
+    
+    def __call__(self, text):
+        return "".join([self.map.get(x, x) for x in text])
 
 
 class Num2WrdCN(object):
@@ -175,7 +182,7 @@ class TextNormalizerCN(object):
         }
         
         self.N2W = Num2WrdCN()
-        #elf.T2S = OpenCC('t2s')
+        self.T2S = T2S(os.path.join(res_root_dir, Config.cn_t2s_path))
 
     def _load(self, filename):
         func_name = f"{self.__class__.__name__}::{sys._getframe().f_code.co_name}"
@@ -673,8 +680,7 @@ class TextNormalizerCN(object):
             func_name = f"{self.__class__.__name__}::{sys._getframe().f_code.co_name}"
             sys.stderr.write(f"{func_name}: input> utt_id={utt_id}, utt_text=`{utt_text}`\n")
             
-        # utt_text = self.T2S.convert(utt_text)
-        utt_text = convert(utt_text, 'zh-hans')
+        utt_text = self.T2S(utt_text)
         utt_text = self.process(self.tokenize(utt_text))
 
         # 标点统一替换成全角

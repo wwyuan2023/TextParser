@@ -18,7 +18,6 @@ requirements = {
     "install": [
         "setuptools>=38.5.1",
         "numpy",
-        "zhconv",
         "numba",
     ],
     "setup": [],
