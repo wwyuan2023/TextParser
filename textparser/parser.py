@@ -125,8 +125,9 @@ def main():
             utt_vector.tofile(outpath)
 
         # output
-        line  = f"{utt_id}    {utt_text}\n"
-        line += f"{utt_id}    {utt_segtext}\n"
+        line = f"{utt_id}    {utt_text}\n"
+        sys.stderr.write(line)
+        line = f"{utt_id}    {utt_segtext}\n"
         sys.stdout.write(line)
     
     if fid.fileno() not in {0, 1, 2}:
