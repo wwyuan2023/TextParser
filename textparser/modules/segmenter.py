@@ -662,11 +662,11 @@ class SegmenterCN(object):
                 _sinfo.append(sinfo[i])
                 continue
             wd = sword[i]
-            py = [] if pinyin[i] is None else pinyin[i]
+            py = [] if pinyin[i] is None else list(pinyin[i])
             i += 1
             while i < slen and bound[i] < 0:
                 wd += sword[i]
-                py += [] if pinyin[i] is None else pinyin[i]
+                py += [] if pinyin[i] is None else list(pinyin[i])
                 i += 1
             i -= 1
             if len(py) == 0: py = None
