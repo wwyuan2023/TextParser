@@ -322,7 +322,7 @@ class Pronunciation(object):
                     pphn = Syllable.s2p(pre_pinyin[-1])
                     cphn = Syllable.s2p(cur_pinyin[0])[0]
                     psyl = Syllable.p2s(list(pphn) + [cphn]) + ptone
-                    segtext.set_py(idx-1, pre_pinyin[:-1] + [psyl])
+                    segtext.set_py(idx-1, list(pre_pinyin[:-1]) + [psyl])
                     segtext.set_py(idx, None)
         return segtext
     
