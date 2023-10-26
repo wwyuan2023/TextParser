@@ -81,10 +81,10 @@ class Pronunciation(object):
                     if poly not in self.rules:
                         self.rules[poly] = []
                     continue
-                mr = re.match(r'^(\d+)\?(.+:)(.+?),([a-z]+?)$', line)
+                mr = re.match(r'^(\d+)\?(.+:)(.+?)$', line)
                 assert mr, f"line={line}\n"
-                weight, cond, pinyin, pos = mr.group(1), mr.group(2), mr.group(3), mr.group(4)
-                rule = [int(weight), pinyin, pos]
+                weight, cond, pinyin = mr.group(1), mr.group(2), mr.group(3)
+                rule = [int(weight), pinyin]
                 line = cond
                 while True:
                     mr = re.match(r'^\((.+?)\)[\(:]', line)
@@ -102,30 +102,30 @@ class Pronunciation(object):
                 continue
     
     def _rule_printer(self, rule):
-        weight, pinyin, pos = rule[:3]
+        weight, pinyin = rule[:2]
         _str = f"{weight}?"
-        for matched in rule[3:]:
+        for matched in rule[2:]:
             _str += f"({matched[0]},{matched[1]},{matched[2]}{matched[3]})"
-        _str += f":{pinyin},{pos}\n"
+        _str += f":{pinyin}\n"
         return _str
 
     def _match_rule(self, segtext, idx, rule):
-        for matched in rule[3:]:
+        for matched in rule[2:]:
             start, end, czp, cond = matched
             nidx = idx + start
             
-            if nidx < 0 or nidx > len(segtext): # out of range
-                return False
+            #if nidx < 0 or nidx > len(segtext): # out of range
+            #    return False
             
             success = True
             if czp[-1] == 'c':
-                cx = ';' + segtext.get_cx(nidx, '') + ';'
+                cx = ';' + segtext.get_cx(nidx, 'nil') + ';'
                 if cx not in cond: success = False
             elif czp[-1] == 'z':
-                ws = [';'+w+';' for w in segtext.get_wd(nidx, '')]
+                ws = [';'+w+';' for w in segtext.get_wd(nidx, '')] if nidx < 0 or nidx > len(segtext) else [';nil;']
                 success = any([w in cond for w in ws])
             else: #'p'
-                wd = ';' + segtext.get_wd(nidx, '') + ';'
+                wd = ';' + segtext.get_wd(nidx, 'nil') + ';'
                 if wd not in cond: success = False
             
             if czp[0] == '!': success = not success
@@ -150,7 +150,6 @@ class Pronunciation(object):
                 if self.loglv > 1:
                     sys.stderr.write(f"{func_name}: try to match rule success, rule={self._rule_printer(rule)}")
                 segtext.set_py(idx, rule[1])
-                segtext.set_cx(idx, rule[2])
                 break
         return segtext
 
