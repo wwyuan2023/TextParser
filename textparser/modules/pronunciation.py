@@ -340,7 +340,7 @@ class Pronunciation(object):
                 if pinyin is None:
                     pinyin = py + tn
                     continue
-                if i > len(pinyin): continue
+                if i >= len(pinyin): continue
                 pinyin = list(pinyin)
                 pinyin[i] = py + tn
                 segtext.set_py(idx, pinyin)
