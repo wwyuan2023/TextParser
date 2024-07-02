@@ -84,7 +84,7 @@ class Pronunciation(object):
                 mr = re.match(r'^(\d+)\?(.+:)(.+?)$', line)
                 assert mr, f"line={line}\n"
                 weight, cond, pinyin = mr.group(1), mr.group(2), mr.group(3)
-                rule = [int(weight), pinyin]
+                rule = [int(weight), pinyin.split(",")[0]] # pinyin maybe with gpos
                 line = cond
                 while True:
                     mr = re.match(r'^\((.+?)\)[\(:]', line)
