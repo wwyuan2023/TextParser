@@ -7,8 +7,7 @@ import copy
 
 import textparser
 from textparser import Config
-from textparser.utils import Syllable, SegText
-from textparser.utils import GPOS, Lang
+from textparser.utils import Lang, Syllable, SegText
 from textparser.third_part import G2p
 from textparser.version import __version__
 

@@ -5,9 +5,8 @@ import re
 
 import textparser
 from textparser import Config
-from textparser.utils import Syllable, SegText
-from textparser.utils import GPOS, Lang
-from textparser.third_part import CMUSylBnd, G2p
+from textparser.utils import Lang, Syllable, SegText
+from textparser.third_part import CMUSylBnd
 from textparser.version import __version__
 
 
@@ -326,21 +325,31 @@ class Pronunciation(object):
         return segtext
     
     def _changepron_mark(self, segtext):
+        func_name = f"{self.__class__.__name__}::{sys._getframe().f_code.co_name}"
         for idx in range(1, len(segtext)):
             if segtext.get_lang(idx, Lang.UNKNOW) != Lang.CN: continue
             mark = segtext.get_mark(idx)
             if mark is None: continue
             for mk in mark.strip(',').split(','):
                 mr = self.pyregex.match(mk)
-                if not mr: continue
+                if not mr:
+                    if self.loglv > 0:
+                        sys.stderr.write(f"{func_name}: mark cannot match with regular, maybe an error, mark={mark}\n")
+                    continue
                 i, py, tn = int(mr.group(1)), mr.group(2), mr.group(3)
                 # check
-                if not(0 < int(tn) < 6) or not(Syllable.is_py(py)): continue
+                if not(0 < int(tn) < 6) or not(Syllable.is_py(py)):
+                    if self.loglv > 0:
+                        sys.stderr.write(f"{func_name}: pinyin check error: pinyin={py}, tone={tn}\n")
+                    continue
                 pinyin = segtext.get_py(idx)
                 if pinyin is None:
-                    pinyin = py + tn
+                    pinyin = [py + tn]
+                    i = 0
+                if i >= len(pinyin):
+                    if self.loglv > 0:
+                        sys.stderr.write(f"{func_name}: index is out of range, i={i}, pinyin={pinyin}\n")
                     continue
-                if i >= len(pinyin): continue
                 pinyin = list(pinyin)
                 pinyin[i] = py + tn
                 segtext.set_py(idx, pinyin)

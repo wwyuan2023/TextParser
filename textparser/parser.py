@@ -31,25 +31,30 @@ class TextParser(object):
         except:
             pass
 
-    def __call__(self, utt_id, utt_text, context=None):
-        if self.loglv > 0:
-            func_name = f"{self.__class__.__name__}::{sys._getframe().f_code.co_name}"
-            sys.stderr.write(f"{func_name}: Parse input text, utt_id={utt_id}, utt_text=`{utt_text}`\n")
-        
-        utt_id, utt_text = self.textnorm(utt_id, utt_text, context=self.context if context is None else context)
-        utt_id, utt_segtext = self.segmeter(utt_id, utt_text)
-        utt_id, utt_segtext = self.pronuciation(utt_id, utt_segtext)
-        utt_id, utt_segtext, utt_vector = self.vectorization(utt_id, utt_segtext)
+    def __call__(self, utt_id, utt_text, context=None, nstage=4):
+
+        nstage = 4 if nstage < 1 else nstage
 
         if self.loglv > 0:
+            func_name = f"{self.__class__.__name__}::{sys._getframe().f_code.co_name}"
+            sys.stderr.write(f"{func_name}: Parse input text, nstate={nstage}, utt_id={utt_id}, utt_text=`{utt_text}`\n")
+        
+        utt_segtext, utt_vector = None, None
+        
+        if nstage > 0: utt_id, utt_text = self.textnorm(utt_id, utt_text, context=self.context if context is None else context)
+        if nstage > 1: utt_id, utt_segtext = self.segmeter(utt_id, utt_text)
+        if nstage > 2: utt_id, utt_segtext = self.pronuciation(utt_id, utt_segtext)
+        if nstage > 3: utt_id, utt_segtext, utt_vector = self.vectorization(utt_id, utt_segtext)
+
+        if self.loglv > 0 and utt_segtext is not None:
             sys.stderr.write(f"{func_name}: Parse done! utt_id={utt_id}, utt_segtext=`{utt_segtext}`\n")
-        if self.loglv > 2:
+        if self.loglv > 2 and utt_vector is not None:
             sys.stderr.write(f"{func_name}: Devector, utt_id={utt_id}\n")
             prosody = self.vectorization.devectoring(utt_vector)
             for p in prosody:
                 sys.stderr.write(f"utt_id={utt_id}: {p}\n")
 
-        return utt_id, utt_segtext, utt_vector
+        return utt_id, utt_text, utt_segtext, utt_vector
 
 
 def main():
@@ -103,6 +108,7 @@ def main():
     # construnt instance
     parser = TextParser(context=context, loglv=loglv)
 
+    nstage = 3 if outdir is None else 4
     fid = open(file, 'rt') if not hasattr(file, 'read') else file
     for line in fid:
         # read one line
@@ -115,8 +121,8 @@ def main():
         if utt_text == '':
             continue
 
-        # text normalization
-        utt_id, utt_segtext, utt_vector = parser(utt_id, utt_text, context=context)
+        # parse results
+        utt_id, utt_text, utt_segtext, utt_vector = parser(utt_id, utt_text, context=context, nstage=nstage)
 
         # save
         if outdir is not None:

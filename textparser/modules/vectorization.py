@@ -4,9 +4,7 @@ import os, sys
 import numpy as np
 
 from textparser import Config
-from textparser.utils import GPOS, SenType, Syllable, Phoneme, Tone, Lang
-from textparser.utils import SegText
-from textparser.utils import is_punctuation
+from textparser.utils import GPOS, SenType, Syllable, Phoneme, Tone, Lang, SegText, is_punctuation
 from textparser.version import __version__
 
 
@@ -51,7 +49,7 @@ class Vectorization(object):
             else:
                 pws += len(py)
         
-        vector = np.array(outputs, dtype=np.float32)
+        vector = np.array(outputs, dtype=np.int8)
 
         if self.loglv > 0:
             sys.stderr.write(f"{func_name}: output> utt_id={utt_id}, segtext=`{segtext}`\n")
